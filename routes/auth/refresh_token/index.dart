@@ -27,7 +27,9 @@ Future<Response> onRefreshToken(RequestContext context) async {
         statusCode: HttpStatus.badRequest);
   }
   final verifyT = JwtUtil.verifyToken(refToken);
-  if (verifyT == null || verifyT.payload == null) {
+  if (verifyT == null ||
+      verifyT.payload == null ||
+      verifyT.payload["type"] != "refresh") {
     return errorResponse('Invalid or expired refresh token',
         statusCode: HttpStatus.unauthorized);
   }

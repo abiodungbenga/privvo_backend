@@ -33,9 +33,15 @@ class UserModel {
     );
   }
 
-  UserModel copyWith() {
+  UserModel copyWith(
+      {String? name,
+      String? id,
+      UserMeta? userMeta,
+      UserSubscription? userSubscription}) {
     return UserModel(
-      name: name,
+      name: name ?? "",
+      userMeta: userMeta,
+      userSubscription: userSubscription,
       id: id,
       email: email,
     );

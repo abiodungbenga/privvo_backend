@@ -13,8 +13,8 @@ Handler middleware(Handler handler) {
   // TODO: implement middleware
   return handler
       .use(requestLogger())
+      .use(MainMiddlewares.authMiddleware())
       .use(MainMiddlewares.mongoMiddleware())
       .use(MainMiddlewares.redisMiddleware())
-      .use(MainMiddlewares.authMiddleware())
       .use(_provideUserRepository());
 }

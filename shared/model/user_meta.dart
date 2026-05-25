@@ -4,15 +4,19 @@ class UserMeta {
   final int? storageLimitMb;
   final String? language;
   final bool isDark;
+  final bool isEmailVerified;
   final DateTime? createdAt;
+  final DateTime? updatedAt;
   final DateTime? lastLoggedIn;
 
   UserMeta({
     this.profileUrl,
     this.isDark = false,
+    this.isEmailVerified = false,
     this.createdAt,
     this.language,
     this.lastLoggedIn,
+    this.updatedAt,
     this.storageUsedMb,
     this.storageLimitMb,
   });
@@ -21,6 +25,7 @@ class UserMeta {
     return UserMeta(
       profileUrl: json['profileUrl'] as String?,
       isDark: json['isDark'] as bool,
+      isEmailVerified: json['isEmailVerified'] as bool,
       storageLimitMb: json['storageLimitMb'] as int?,
       storageUsedMb: json['storageUsedMb'] as int?,
       language: json['language'] as String?,
@@ -30,6 +35,9 @@ class UserMeta {
       lastLoggedIn: json['lastLoggedIn'] != null
           ? DateTime.parse(json['lastLoggedIn'] as String)
           : null,
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : null,
     );
   }
 
@@ -37,10 +45,12 @@ class UserMeta {
     return {
       'profileUrl': profileUrl,
       'isDark': isDark,
+      'isEmailVerified': isEmailVerified,
       'storageUsedMb': storageUsedMb,
       'storageLimitMb': storageLimitMb,
       'language': language,
       'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
       'lastLoggedIn': lastLoggedIn?.toIso8601String(),
     };
   }

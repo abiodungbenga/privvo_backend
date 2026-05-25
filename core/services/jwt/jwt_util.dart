@@ -26,7 +26,7 @@ class JwtUtil {
     try {
       return JWT.verify(token, SecretKey(_secret));
     } on JWTException catch (e) {
-      throw UnauthorizedException(message: "JWT ERROR: ${e.message}");
+      throw UnauthorizedException(message: "Invalid token");
     }
   }
 
