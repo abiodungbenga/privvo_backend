@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:http/http.dart' as http;
 import '../../../shared/constants/app_constants.dart';
 import '../../../shared/model/authentication_model.dart';
@@ -43,7 +42,18 @@ class GoogleSigninRepository {
     });
 
     if (existingUser != null && googleUser != null) {
-      return AuthenticationModel.fromJson(existingUser);
+      final refToken = JwtUtil.generateToken(user.id ?? "",
+          duration: const Duration(days: 7), type: 'refresh');
+
+      await redisService.redisClient.set(
+        key: 'refresh:${user.id}',
+        value: refToken,
+        ttl: const Duration(days: 7),
+      );
+
+      final token = JwtUtil.generateToken(user.id ?? "");
+      return AuthenticationModel.fromJson(existingUser)
+          .copyWith(token: token, refreshToken: refToken);
     }
     if (googleUser != null) {
       if (mongoService.db != null) {
@@ -55,10 +65,11 @@ class GoogleSigninRepository {
           value: refToken,
           ttl: const Duration(days: 7),
         );
+
+        final token = JwtUtil.generateToken(user.id ?? "");
         final collection =
             mongoService.db!.collection(AppConstants.usersCollection);
         await collection.insertOne(user.toJson());
-        final token = JwtUtil.generateToken(user.id ?? "");
         return AuthenticationModel.fromJson(user.toJson())
             .copyWith(token: token, refreshToken: refToken);
       }
