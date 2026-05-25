@@ -8,6 +8,8 @@ import '../../../core/response/my_response.dart';
 import '../../../core/services/redis/redis_service.dart';
 import '../../../shared/extensions/hash_extensions.dart';
 import '../../../shared/model/authentication_model.dart';
+import '../../../shared/model/subscription_plan_model.dart';
+import '../../../shared/model/user_meta.dart';
 import '../../../shared/utils/general_functions.dart';
 import '../../../shared/utils/validator/validator_rules.dart';
 import '../../../shared/utils/validator/validator_schema.dart';
@@ -48,6 +50,19 @@ Future<Response> onRegister(RequestContext context) async {
           name: username ?? "",
           email: email ?? "",
           id: email?.hashedValue,
+          userSubscription: UserSubscription(
+            plan: SubscriptionPlan.free,
+            status: "Ongoing",
+            startedAt: DateTime.now(),
+          ),
+          userMeta: UserMeta(
+            createdAt: DateTime.now(),
+            language: "English",
+            lastLoggedIn: DateTime.now(),
+            profileUrl: null,
+            storageLimitMb: 1000,
+            storageUsedMb: 0,
+          ),
           password: GeneralFunctions.hashPassword(password ?? ""),
         ),
         mongoClient,

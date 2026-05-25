@@ -45,8 +45,8 @@ class UserModel {
     return {
       'id': id,
       'name': name,
-      'userMeta': userMeta,
-      'userSubscription': userSubscription,
+      'userMeta': userMeta?.toJson(),
+      'userSubscription': userSubscription?.toJson(),
       'email': email,
     };
   }

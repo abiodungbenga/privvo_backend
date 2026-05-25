@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
 
-Response successResponse(dynamic data, {int statusCode = HttpStatus.ok}) {
-  final body = <String, dynamic>{'message': 'success!'};
+Response successResponse(dynamic data,
+    {int statusCode = HttpStatus.ok, String successMsg = 'success!'}) {
+  final body = <String, dynamic>{'message': successMsg};
   if (data != null) {
     body['data'] = data;
   }

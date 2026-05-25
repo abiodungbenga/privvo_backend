@@ -3,6 +3,7 @@ import 'package:dart_frog/dart_frog.dart';
 import '../../shared/constants/app_constants.dart';
 import '../data/mongo/mongo_service.dart';
 import '../exceptions/app_exceptions.dart';
+import '../response/my_response.dart';
 import '../services/jwt/jwt_util.dart';
 import '../services/redis/redis_service.dart';
 
@@ -10,9 +11,9 @@ class MainMiddlewares {
   static Middleware mongoMiddleware() {
     return (handler) {
       return (context) async {
+        AppConstants.initEnv();
         final mongo = MongoService.instance;
         await mongo.init();
-        AppConstants.initEnv();
         final updatedContext = context.provide<MongoService>(
           () => mongo,
         );
@@ -43,13 +44,13 @@ class MainMiddlewares {
   }
 
   /// token validation MiddleWare
-  Middleware authMiddleware() {
+  static Middleware authMiddleware() {
     return (handler) {
       return (context) async {
         final authHeader = context.request.headers['authorization'];
 
         if (authHeader == null || !authHeader.startsWith('Bearer ')) {
-          return Response(statusCode: 401);
+          return errorResponse('No token', statusCode: 401);
         }
 
         final token = authHeader.substring(7);
@@ -57,7 +58,7 @@ class MainMiddlewares {
         final userId = JwtUtil.getUserId(token);
 
         if (userId == null) {
-          return Response(statusCode: 401);
+          return errorResponse('Invalid token', statusCode: 401);
         }
 
         return handler.use(

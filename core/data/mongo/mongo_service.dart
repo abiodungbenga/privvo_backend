@@ -12,14 +12,15 @@ class MongoService {
 
   Future<void> init() async {
     try {
-      if (_initialized) return;
+      if ((_db?.isConnected ?? false) && _initialized) return;
 
       _db = await Db.create(AppConstants.DbUrl);
       await _db!.open();
 
       _initialized = true;
+      // ignore: avoid_catching_errors
     } on MongoDartError catch (e) {
-      throw DataBaseException(e.message);
+      throw DataBaseException('Mongo error ${e.message}');
     }
   }
 

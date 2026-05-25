@@ -21,7 +21,7 @@ class UserRepo {
       UserModel user, MongoService _mongoClient) async {
     final collection =
         _mongoClient.db!.collection(AppConstants.usersCollection);
-    await collection.update({'id': user.id}, user.toJson());
+    await collection.update({'id': user.id}, user.toJson().remove('id'));
     return user;
   }
 

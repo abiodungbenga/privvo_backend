@@ -25,15 +25,15 @@ class AuthenticationModel {
   factory AuthenticationModel.fromJson(Map<String, dynamic> json) {
     return AuthenticationModel(
       id: json['id'] as String?,
-      userMeta: json['userMeta'] != null
-          ? UserMeta.fromJson(
-              json['userMeta'] as Map<String, dynamic>,
-            )
-          : null,
-      userSubscription: json['userSubscription'] != null
-          ? UserSubscription.fromJson(
-              json['userSubscription'] as Map<String, dynamic>)
-          : null,
+      // userMeta: json['userMeta'] != null
+      //     ? UserMeta.fromJson(
+      //         json['userMeta'] as Map<String, dynamic>,
+      //       )
+      //     : null,
+      // userSubscription: json['userSubscription'] != null
+      //     ? UserSubscription.fromJson(
+      //         json['userSubscription'] as Map<String, dynamic>)
+      //     : null,
       name: json['name'] as String,
       refreshToken: json['refreshToken'] as String?,
       token: json['token'] as String?,
@@ -57,8 +57,9 @@ class AuthenticationModel {
       'name': name,
       'email': email,
       if (password != null) 'password': password,
-      if (userMeta != null) 'userMeta': password,
-      if (userSubscription != null) 'userSubscription': password,
+      if (userMeta != null) 'userMeta': userMeta?.toJson(),
+      if (userSubscription != null)
+        'userSubscription': userSubscription?.toJson(),
       if (token != null) 'token': token,
       if (refreshToken != null) 'refreshToken': refreshToken,
     };

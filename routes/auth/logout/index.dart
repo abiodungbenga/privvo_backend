@@ -1,6 +1,27 @@
+import 'dart:io';
+
 import 'package:dart_frog/dart_frog.dart';
 
-Response onRequest(RequestContext context) {
+import '../../../core/repository/auth/auth_repo.dart';
+import '../../../core/response/my_response.dart';
+import '../../../core/services/redis/redis_service.dart';
+
+Future<Response> onRequest(RequestContext context) {
   // TODO: implement route handler
-  return Response(body: 'This is a new route!');
+  return switch (context.request.method) {
+    HttpMethod.post => onLogout(context),
+    _ => Future.value(
+        Response(
+          statusCode: HttpStatus.methodNotAllowed,
+        ),
+      ),
+  };
+}
+
+Future<Response> onLogout(RequestContext context) async {
+  final redisService = context.read<RedisService>();
+  final authRepo = context.read<AuthRepository>();
+  final userId = context.read<String>();
+  final result = await authRepo.logoutUser(userId, redisService);
+  return successResponse(null, statusCode: HttpStatus.noContent);
 }

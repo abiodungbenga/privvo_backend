@@ -10,20 +10,26 @@ class RedisService {
     socket: RedisSocketOptions(
       host: AppConstants.redisHost,
       port: AppConstants.redisPort,
-      password: AppConstants.redisPassword,
-      username: AppConstants.redisUsername,
+      // password: AppConstants.redisPassword,
+      // username: AppConstants.redisUsername,
     ),
     command: RedisCommandOptions(),
   );
 
   bool _initialized = false;
-  Future<void> init() async {
+  Future<void>? _initFuture;
+
+  Future<void> init() {
+    return _initFuture ??= _initialize();
+  }
+
+  Future<void> _initialize() async {
     try {
       if (_initialized) return;
       await redisClient.connect();
       _initialized = true;
     } on RedisException catch (e) {
-      throw DataBaseException(e.message);
+      throw DataBaseException("redis error ${e.message}");
     }
   }
 

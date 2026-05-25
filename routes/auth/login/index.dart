@@ -1,10 +1,6 @@
 import 'dart:io';
-
 import 'package:dart_frog/dart_frog.dart';
-import 'package:mongo_dart/mongo_dart.dart';
-
 import '../../../core/data/mongo/mongo_service.dart';
-import '../../../core/exceptions/app_exceptions.dart';
 import '../../../core/repository/auth/auth_repo.dart';
 import '../../../core/response/my_response.dart';
 import '../../../core/services/redis/redis_service.dart';

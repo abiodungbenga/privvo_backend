@@ -1,25 +1,28 @@
 class UserMeta {
   final String? profileUrl;
-  final int? storageUsed;
-  final int? storageLimit;
+  final int? storageUsedMb;
+  final int? storageLimitMb;
   final String? language;
+  final bool isDark;
   final DateTime? createdAt;
   final DateTime? lastLoggedIn;
 
   UserMeta({
     this.profileUrl,
+    this.isDark = false,
     this.createdAt,
     this.language,
     this.lastLoggedIn,
-    this.storageUsed,
-    this.storageLimit,
+    this.storageUsedMb,
+    this.storageLimitMb,
   });
 
   factory UserMeta.fromJson(Map<String, dynamic> json) {
     return UserMeta(
       profileUrl: json['profileUrl'] as String?,
-      storageUsed: json['storageUsed'] as int?,
-      storageLimit: json['storageLimit'] as int?,
+      isDark: json['isDark'] as bool,
+      storageLimitMb: json['storageLimitMb'] as int?,
+      storageUsedMb: json['storageUsedMb'] as int?,
       language: json['language'] as String?,
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'] as String)
@@ -33,8 +36,9 @@ class UserMeta {
   Map<String, dynamic> toJson() {
     return {
       'profileUrl': profileUrl,
-      'storageUsed': storageUsed,
-      'storageLimit': storageLimit,
+      'isDark': isDark,
+      'storageUsed': storageUsedMb,
+      'storageLimit': storageLimitMb,
       'language': language,
       'createdAt': createdAt?.toIso8601String(),
       'lastLoggedIn': lastLoggedIn?.toIso8601String(),

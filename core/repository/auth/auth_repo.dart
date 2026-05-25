@@ -57,6 +57,7 @@ class AuthRepository {
 
   Future<AuthenticationModel> loginUser(String email, String password,
       MongoService _mongoClient, RedisService _redisService) async {
+    _rateLimit(email, _mongoClient, _redisService);
     if (_mongoClient.db != null) {
       if (email.isEmpty || password.isEmpty) {
         throw ValidationException({
@@ -85,6 +86,11 @@ class AuthRepository {
       if (!isPasswordValid) {
         throw BadRequestException("Incorrect password");
       }
+      await collection.updateOne({
+        'email': email
+      }, {
+        'userMeta': {'lastLogin': DateTime.now()}
+      });
 
       final userModel = AuthenticationModel.fromJson(user);
 
@@ -136,8 +142,7 @@ class AuthRepository {
     return {'token': newAccessToken, "refreshToken": refreshToken};
   }
 
-  Future<void> logoutUser(String userId, MongoService _mongoClient,
-      RedisService _redisService) async {
+  Future<void> logoutUser(String userId, RedisService _redisService) async {
     await _redisService.redisClient.delete(key: 'refresh:$userId');
   }
 
