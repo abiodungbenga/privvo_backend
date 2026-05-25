@@ -19,9 +19,8 @@ Future<Response> onRequest(RequestContext context) {
   return switch (context.request.method) {
     HttpMethod.post => onRegister(context),
     _ => Future.value(
-        Response(
-          statusCode: HttpStatus.methodNotAllowed,
-        ),
+        errorResponse("Method not allowed",
+            statusCode: HttpStatus.methodNotAllowed),
       ),
   };
 }

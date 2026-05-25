@@ -80,7 +80,7 @@ class MainMiddlewares {
 
         final contentType = context.request.headers['content-type'] ?? '';
 
-        if (contentType.contains('application/json')) {
+        if (contentType.contains('application/json') || contentType.isEmpty) {
           late final dynamic body;
           try {
             body = await context.request.json();

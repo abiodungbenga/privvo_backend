@@ -13,9 +13,8 @@ Future<Response> onRequest(RequestContext context) {
     HttpMethod.delete => onDelete(context),
     HttpMethod.put => onUpdate(context),
     _ => Future.value(
-        Response(
-          statusCode: HttpStatus.methodNotAllowed,
-        ),
+        errorResponse("Method not allowed",
+            statusCode: HttpStatus.methodNotAllowed),
       ),
   };
 }

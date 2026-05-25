@@ -21,6 +21,5 @@ Handler middleware(Handler handler) {
       .use(requestLogger())
       .use(MainMiddlewares.mongoMiddleware())
       .use(MainMiddlewares.redisMiddleware())
-      .use(_provideGoogleRepository())
-      .use(_provideAuthRepository());
+      .use(_provideGoogleRepository());
 }

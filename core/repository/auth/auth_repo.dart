@@ -39,8 +39,6 @@ class AuthRepository {
       final refToken = JwtUtil.generateToken(user.id ?? "",
           duration: const Duration(days: 7), type: 'refresh');
 
-      final accessToken = JwtUtil.generateToken(user.id ?? "");
-
       await _redisService.redisClient.set(
         key: 'refresh:${user.id}',
         value: refToken,
