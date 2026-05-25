@@ -1,24 +1,25 @@
 import 'package:email_otp/email_otp.dart';
 
+import '../../../shared/constants/app_constants.dart';
 import '../redis/redis_service.dart';
 
 class VerificationService {
   static Future<void> init() async {
     // AppConstants.initEnv();
     await EmailOTP.config(
-      appName: 'MyApp',
-      appEmail: "privvo@gmail.com",
+      appName: AppConstants.appName,
+      appEmail: AppConstants.appEmail,
       otpType: OTPType.numeric,
       otpLength: 4,
       expiry: 5,
-      emailTheme: EmailTheme.v5,
+      emailTheme: EmailTheme.v1,
     );
     await EmailOTP.setSMTP(
-      host: 'smtp.gmail.com',
+      host: AppConstants.smtpHost,
       emailPort: EmailPort.port465,
       secureType: SecureType.ssl,
-      username: 'gbengaemma22@gmail.com',
-      password: 'xesa wdyw exfx rzlj',
+      username: AppConstants.smtpUsername,
+      password: AppConstants.smtpPassword,
     );
   }
 

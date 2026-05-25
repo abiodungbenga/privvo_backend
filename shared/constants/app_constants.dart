@@ -25,6 +25,15 @@ class AppConstants {
   static String redisUsername = env['REDIS_USERNAME'] ?? '';
   static String redisPassword = env['REDIS_PASSWORD'] ?? '';
 
+  ///Smtp
+  static String smtpHost = env['SMTP_HOST'] ?? 'smtp.gmail.com';
+  static String smtpUsername = env['SMTP_USERNAME'] ?? 'gbengaemma22@gmail.com';
+  static String smtpPassword = env['SMTP_PASSWORD'] ?? 'xesa wdyw exfx rzlj';
+
+  /// app
+  static String appName = env['APP_NAME'] ?? 'Privvo';
+  static String appEmail = env['APP_EMAIL'] ?? 'privvo@gmail.com';
+
   /// collections
   static String usersCollection = "users";
 }
