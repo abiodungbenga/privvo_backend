@@ -41,5 +41,4 @@ Future<Response> onLogin(RequestContext context) async {
       .read<AuthRepository>()
       .loginUser(email ?? "", password ?? "", mongoClient, redisService);
   return successResponse(user);
-  ;
 }

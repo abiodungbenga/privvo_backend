@@ -22,6 +22,6 @@ Future<Response> onLogout(RequestContext context) async {
   final redisService = context.read<RedisService>();
   final authRepo = context.read<AuthRepository>();
   final userId = context.read<String>();
-  final result = await authRepo.logoutUser(userId, redisService);
+  await authRepo.logoutUser(userId, redisService);
   return successResponse(null, statusCode: HttpStatus.noContent);
 }

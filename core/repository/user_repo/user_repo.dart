@@ -3,6 +3,9 @@ import 'package:mongo_dart/mongo_dart.dart';
 import '../../../shared/constants/app_constants.dart';
 import '../../../shared/model/user_model.dart';
 import '../../data/mongo/mongo_service.dart';
+import '../../exceptions/app_exceptions.dart';
+import '../../services/redis/redis_service.dart';
+import '../../services/verification/verification_service.dart';
 
 class UserRepo {
   Future<UserModel> getUser(String userId, MongoService _mongoClient) async {
@@ -17,6 +20,27 @@ class UserRepo {
         _mongoClient.db!.collection(AppConstants.usersCollection);
     final users = await collection.find().toList();
     return users.map((e) => UserModel.fromJson(e)).toList();
+  }
+
+  Future<bool> verifyUser(
+    String otp,
+    String userId,
+    RedisService _redisService,
+    MongoService mongoClient,
+  ) async {
+    final bool otpCorrect = VerificationService.verifyOtp(otp);
+    final collection = mongoClient.db!.collection(AppConstants.usersCollection);
+    final String? redisString =
+        await _redisService.redisClient.get(key: 'otp:$userId');
+    if (redisString == null) {
+      throw BadRequestException('OTP expired please resend');
+    }
+    if (otpCorrect && otp == redisString) {
+      await collection.updateOne(
+          where.eq('id', userId), modify.set('userMeta.isEmailVerified', true));
+      return otpCorrect;
+    }
+    return otpCorrect;
   }
 
   Future<UserModel> updateUser(

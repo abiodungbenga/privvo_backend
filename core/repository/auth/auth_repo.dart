@@ -6,6 +6,7 @@ import '../../data/mongo/mongo_service.dart';
 import '../../exceptions/app_exceptions.dart';
 import '../../services/jwt/jwt_util.dart';
 import '../../services/redis/redis_service.dart';
+import '../../services/verification/verification_service.dart';
 
 class AuthRepository {
   Future<AuthenticationModel> createUser(AuthenticationModel user,
@@ -49,6 +50,8 @@ class AuthRepository {
           _mongoClient.db!.collection(AppConstants.usersCollection);
       await collection.insertOne(user.toJson());
       final token = JwtUtil.generateToken(user.id ?? "");
+      await VerificationService.init();
+      VerificationService.sendOtp(user.email, _redisService, user.id ?? "");
       return AuthenticationModel.fromJson(user.toJson())
           .copyWith(token: token, refreshToken: refToken);
     }
@@ -103,6 +106,13 @@ class AuthRepository {
         value: refToken,
         ttl: const Duration(days: 7),
       );
+
+      if (userModel.userMeta?.isEmailVerified == false ||
+          userModel.userMeta?.isEmailVerified == null) {
+        await VerificationService.init();
+        VerificationService.sendOtp(
+            userModel.email, _redisService, userModel.id ?? "");
+      }
 
       return AuthenticationModel.fromJson(user)
           .copyWith(token: accessToken, refreshToken: refToken);
