@@ -1,6 +1,7 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
 import '../../../shared/constants/app_constants.dart';
+import '../../exceptions/app_exceptions.dart';
 
 class JwtUtil {
   static final String _secret = AppConstants.JwtSecret;
@@ -11,13 +12,12 @@ class JwtUtil {
     final jwt = JWT({
       'sub': userId,
       'type': type ?? 'access',
-      'iat': DateTime.now().millisecondsSinceEpoch,
+      'iat': DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000,
     });
 
     return jwt.sign(
       SecretKey(_secret),
       expiresIn: duration ?? const Duration(minutes: 15),
-      algorithm: JWTAlgorithm.HS256,
     );
   }
 
@@ -25,8 +25,8 @@ class JwtUtil {
   static JWT? verifyToken(String token) {
     try {
       return JWT.verify(token, SecretKey(_secret));
-    } catch (_) {
-      return null;
+    } on JWTException catch (e) {
+      throw UnauthorizedException(message: "JWT ERROR: ${e.message}");
     }
   }
 

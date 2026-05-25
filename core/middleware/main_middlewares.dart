@@ -35,14 +35,6 @@ class MainMiddlewares {
     };
   }
 
-  static Middleware envMiddleware() {
-    return (handler) {
-      return (context) async {
-        return await handler(context);
-      };
-    };
-  }
-
   /// token validation MiddleWare
   static Middleware authMiddleware() {
     return (handler) {

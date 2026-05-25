@@ -6,6 +6,5 @@ Handler middleware(Handler handler) {
   // TODO: implement middleware
   return handler
       .use(MainMiddlewares.requestBodyValidator())
-      .use(MainMiddlewares.middleware())
-      .use(MainMiddlewares.envMiddleware());
+      .use(MainMiddlewares.middleware());
 }

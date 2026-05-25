@@ -37,8 +37,8 @@ class UserMeta {
     return {
       'profileUrl': profileUrl,
       'isDark': isDark,
-      'storageUsed': storageUsedMb,
-      'storageLimit': storageLimitMb,
+      'storageUsedMb': storageUsedMb,
+      'storageLimitMb': storageLimitMb,
       'language': language,
       'createdAt': createdAt?.toIso8601String(),
       'lastLoggedIn': lastLoggedIn?.toIso8601String(),

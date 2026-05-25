@@ -86,11 +86,10 @@ class AuthRepository {
       if (!isPasswordValid) {
         throw BadRequestException("Incorrect password");
       }
-      await collection.updateOne({
-        'email': email
-      }, {
-        'userMeta': {'lastLogin': DateTime.now()}
-      });
+      await collection.updateOne(
+        where.eq('email', email),
+        modify.set('userMeta.lastLogin', DateTime.now()),
+      );
 
       final userModel = AuthenticationModel.fromJson(user);
 
@@ -124,22 +123,36 @@ class AuthRepository {
     }
   }
 
-  Future<Map<String, dynamic>> refreshToken(String userId, String refreshToken,
-      MongoService _mongoClient, RedisService _redisService) async {
+  Future<Map<String, dynamic>> refreshToken(
+      String userId, RedisService _redisService, String token) async {
     final savedToken =
         await _redisService.redisClient.get(key: 'refresh:$userId');
+
+    final refToken = savedToken;
 
     if (savedToken == null) {
       throw UnauthorizedException(message: 'Session expired');
     }
 
-    if (savedToken != refreshToken) {
-      throw UnauthorizedException(message: 'Invalid refresh token');
+    if (savedToken != refToken) {
+      throw UnauthorizedException(
+          message: 'Saved token does not match $savedToken');
     }
 
     final newAccessToken = JwtUtil.generateToken(userId);
+    final newRefreshToken = JwtUtil.generateToken(
+      userId,
+      duration: const Duration(days: 7),
+      type: 'refresh',
+    );
 
-    return {'token': newAccessToken, "refreshToken": refreshToken};
+    await _redisService.redisClient.set(
+      key: 'refresh:$userId',
+      value: newRefreshToken,
+      ttl: const Duration(days: 7),
+    );
+
+    return {'token': newAccessToken, "refreshToken": newRefreshToken};
   }
 
   Future<void> logoutUser(String userId, RedisService _redisService) async {
