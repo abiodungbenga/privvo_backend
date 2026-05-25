@@ -57,6 +57,7 @@ Future<Response> onUpdate(RequestContext context) async {
         email: prevData.email,
         userSubscription: prevData.userSubscription,
         userMeta: UserMeta(
+          signInMethod: prevData.userMeta?.signInMethod,
           updatedAt: DateTime.now(),
           isEmailVerified: prevData.userMeta?.isEmailVerified ?? false,
           createdAt: prevData.userMeta?.createdAt,

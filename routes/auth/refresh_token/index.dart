@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
 
+import '../../../core/exceptions/app_exceptions.dart';
 import '../../../core/repository/auth/auth_repo.dart';
 import '../../../core/response/my_response.dart';
 import '../../../core/services/jwt/jwt_util.dart';
@@ -23,8 +24,9 @@ Future<Response> onRefreshToken(RequestContext context) async {
   final body = await context.request.json() as Map<String, dynamic>;
   String? refToken = body['refreshToken'] as String?;
   if (refToken == null) {
-    return errorResponse('Refresh token is required',
-        statusCode: HttpStatus.badRequest);
+    throw ValidationException({
+      'refreshToken': ['refreshToken is required']
+    });
   }
   final verifyT = JwtUtil.verifyToken(refToken);
   if (verifyT == null ||

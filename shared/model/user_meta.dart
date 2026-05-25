@@ -3,6 +3,7 @@ class UserMeta {
   final int? storageUsedMb;
   final int? storageLimitMb;
   final String? language;
+  final String? signInMethod;
   final bool isDark;
   final bool isEmailVerified;
   final DateTime? createdAt;
@@ -11,6 +12,7 @@ class UserMeta {
 
   UserMeta({
     this.profileUrl,
+    this.signInMethod = "sf-auth",
     this.isDark = false,
     this.isEmailVerified = false,
     this.createdAt,
@@ -24,6 +26,7 @@ class UserMeta {
   factory UserMeta.fromJson(Map<String, dynamic> json) {
     return UserMeta(
       profileUrl: json['profileUrl'] as String?,
+      signInMethod: json['signInMethod'] as String?,
       isDark: json['isDark'] as bool,
       isEmailVerified: json['isEmailVerified'] as bool,
       storageLimitMb: json['storageLimitMb'] as int?,
@@ -45,6 +48,7 @@ class UserMeta {
     return {
       'profileUrl': profileUrl,
       'isDark': isDark,
+      'signInMethod': signInMethod,
       'isEmailVerified': isEmailVerified,
       'storageUsedMb': storageUsedMb,
       'storageLimitMb': storageLimitMb,

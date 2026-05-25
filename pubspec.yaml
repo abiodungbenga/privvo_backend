@@ -16,6 +16,7 @@ dependencies:
   bcrypt: ^1.2.0
   shorebird_redis_client: ^0.0.13
   email_otp: ^3.1.0
+  http: ^1.6.0
 
 dev_dependencies:
   dart_frog_lint: ^0.1.0
