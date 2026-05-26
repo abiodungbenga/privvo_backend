@@ -48,7 +48,7 @@ Future<Response> onRegister(RequestContext context) async {
         AuthenticationModel(
           name: username ?? "",
           email: email ?? "",
-          id: email?.hashedValue,
+          id: GeneralFunctions.getRandomId,
           userSubscription: UserSubscription(
             plan: SubscriptionPlan.free,
             status: "Ongoing",

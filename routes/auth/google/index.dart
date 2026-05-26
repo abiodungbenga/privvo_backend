@@ -9,6 +9,7 @@ import '../../../shared/extensions/hash_extensions.dart';
 import '../../../shared/model/authentication_model.dart';
 import '../../../shared/model/subscription_plan_model.dart';
 import '../../../shared/model/user_meta.dart';
+import '../../../shared/utils/general_functions.dart';
 
 Future<Response> onRequest(RequestContext context) {
   // TODO: implement route handler
@@ -37,7 +38,7 @@ Future<Response> onGoogleSignIn(RequestContext context) async {
     final AuthenticationModel user = AuthenticationModel(
       name: data.givenName ?? "",
       email: data.email ?? "",
-      id: data.email?.hashedValue,
+      id: GeneralFunctions.getRandomId,
       userSubscription: UserSubscription(
         plan: SubscriptionPlan.free,
         status: "Ongoing",

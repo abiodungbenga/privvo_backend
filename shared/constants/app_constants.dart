@@ -36,4 +36,6 @@ class AppConstants {
 
   /// collections
   static String usersCollection = "users";
+
+  static String documentsCollection = "documents";
 }

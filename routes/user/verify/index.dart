@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
-import 'package:shorebird_redis_client/shorebird_redis_client.dart';
 import '../../../core/data/mongo/mongo_service.dart';
 import '../../../core/repository/user_repo/user_repo.dart';
 import '../../../core/response/my_response.dart';
