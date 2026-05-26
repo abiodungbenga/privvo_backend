@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
 import '../../../core/data/mongo/mongo_service.dart';
+import '../../../core/exceptions/app_exceptions.dart';
 import '../../../core/repository/document_repo/document_repo.dart';
 import '../../../core/response/my_response.dart';
 
@@ -38,7 +39,11 @@ Future<Response> onCreate(RequestContext context) async {
 
   final bool? isFavorite = formData.fields['isFavorite'] == 'true';
 
-  final uploadedFile = formData.files['file'];
+  final file = formData.files['file'];
+
+  if (file == null) {
+    throw BadRequestException("uploaded is null!");
+  }
 
   if (title == null) {
     return errorResponse("Title is required",
@@ -59,7 +64,7 @@ Future<Response> onCreate(RequestContext context) async {
   final userId = context.read<String>();
   final document = await context.read<DocumentRepo>().createDocument(
         mongoClient,
-        uploadedFile,
+        file,
         customFields: customFields,
         description: description,
         documentType: documentType,

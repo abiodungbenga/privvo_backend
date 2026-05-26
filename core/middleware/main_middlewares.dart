@@ -96,22 +96,22 @@ class MainMiddlewares {
           }
         }
 
-        if (contentType.contains('multipart/form-data')) {
-          late final FormData formData;
-          try {
-            formData = await context.request.formData();
-          } on FormatException {
-            throw ValidationException({
-              'message': ['Invalid form-data body'],
-            });
-          }
+        // if (contentType.contains('multipart/form-data')) {
+        //   late final FormData formData;
+        //   try {
+        //     formData = await context.request.formData();
+        //   } on FormatException {
+        //     throw ValidationException({
+        //       'message': ['Invalid form-data body'],
+        //     });
+        //   }
 
-          if (formData.fields.isEmpty && formData.files.isEmpty) {
-            throw ValidationException({
-              'message': ['Empty form-data body'],
-            });
-          }
-        }
+        //   if (formData.fields.isEmpty && formData.files.isEmpty) {
+        //     throw ValidationException({
+        //       'message': ['Empty form-data body'],
+        //     });
+        //   }
+        // }
 
         return handler(context);
       };

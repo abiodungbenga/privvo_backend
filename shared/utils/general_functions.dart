@@ -6,6 +6,8 @@ import 'package:dart_frog/dart_frog.dart';
 
 import 'package:image/image.dart' as img;
 
+import '../../core/exceptions/app_exceptions.dart';
+
 class GeneralFunctions {
   static String hashPassword(String password) {
     return BCrypt.hashpw(password, BCrypt.gensalt());
@@ -24,35 +26,38 @@ class GeneralFunctions {
 
   static Future<File?> storeFile({
     UploadedFile? uploadedFile,
-    String? fileName,
     String? fileDirectory,
   }) async {
-    if (uploadedFile == null) return null;
+    try {
+      if (uploadedFile == null) return null;
 
-    final dirPath = 'uploads/$fileDirectory';
-    await ensureDirExists(dirPath);
+      final dirPath = 'public/uploads/$fileDirectory';
+      await ensureDirExists(dirPath);
 
-    final bytes = await uploadedFile.readAsBytes();
-    final mimeType = uploadedFile.contentType?.mimeType;
+      final bytes = await uploadedFile.readAsBytes();
+      final mimeType = uploadedFile.contentType?.mimeType;
 
-    final filePath =
-        '$dirPath/${DateTime.now().millisecondsSinceEpoch}_${uploadedFile.name}';
+      final filePath =
+          '$dirPath/${DateTime.now().millisecondsSinceEpoch}_${uploadedFile.name}';
 
-    final file = File(filePath);
-    if (mimeType != null && mimeType.startsWith('image/')) {
-      final image = img.decodeImage(Uint8List.fromList(bytes));
+      final file = File(filePath);
+      if (mimeType != null && mimeType.startsWith('image/')) {
+        final image = img.decodeImage(Uint8List.fromList(bytes));
 
-      if (image == null) return null;
+        if (image == null) throw BadRequestException("Invalid image");
 
-      final compressedBytes = img.encodeJpg(
-        image,
-        quality: 70,
-      );
+        final compressedBytes = img.encodeJpg(
+          image,
+          quality: 70,
+        );
 
-      await file.writeAsBytes(compressedBytes);
+        await file.writeAsBytes(compressedBytes);
+        return file;
+      }
+      await file.writeAsBytes(bytes);
       return file;
+    } on img.ImageException catch (e) {
+      throw BadRequestException(e.toString());
     }
-    await file.writeAsBytes(bytes);
-    return file;
   }
 }

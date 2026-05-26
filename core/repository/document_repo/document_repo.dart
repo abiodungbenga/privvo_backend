@@ -27,7 +27,21 @@ class DocumentRepo {
 
     const uuid = Uuid();
 
-    final file = await GeneralFunctions.storeFile(uploadedFile: uploadedFile);
+    String savedFilePath;
+    if (uploadedFile?.contentType.mimeType.startsWith('image/') ?? false) {
+      savedFilePath = 'documents/images';
+    } else if (uploadedFile?.contentType.mimeType
+            .startsWith('application/pdf') ??
+        false) {
+      savedFilePath = 'documents/pdfs';
+    } else {
+      savedFilePath = 'documents/others';
+    }
+
+    final file = await GeneralFunctions.storeFile(
+      uploadedFile: uploadedFile,
+      fileDirectory: savedFilePath,
+    );
 
     final bytes = await file?.readAsBytes();
     final DocumentModel document = DocumentModel(
@@ -36,15 +50,18 @@ class DocumentRepo {
       documentType: documentType ?? "",
       extractedData: extractedData ?? {},
       tags: tags ?? [],
-      file: DocumentFileModel(
-          url: file?.path ?? "",
-          fileName: uploadedFile?.name ?? "",
-          mimeType: uploadedFile?.contentType.mimeType ?? "",
-          extension: file?.path.split('.').last ?? "",
-          sizeMb: (bytes?.length ?? 0) / (1024 * 1024),
-          sizeBytes: bytes?.length ?? 0,
-          isImage:
-              uploadedFile?.contentType.mimeType.startsWith('image/') ?? false),
+      file: uploadedFile != null
+          ? DocumentFileModel(
+              url: file?.path ?? "",
+              fileName: uploadedFile?.name ?? "",
+              mimeType: uploadedFile?.contentType.mimeType ?? "",
+              extension: file?.path.split('.').last ?? "",
+              sizeMb: (bytes?.length ?? 0) / (1024 * 1024),
+              sizeBytes: bytes?.length ?? 0,
+              isImage:
+                  uploadedFile?.contentType.mimeType.startsWith('image/') ??
+                      false)
+          : null,
       id: uuid.v4(),
       thumbnailUrl: thumbnailUrl ?? "",
       customFields: customFields ?? {},
