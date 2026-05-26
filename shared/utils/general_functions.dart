@@ -5,15 +5,11 @@ import 'package:bcrypt/bcrypt.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 import 'package:image/image.dart' as img;
-import 'package:uuid/uuid.dart';
 
 class GeneralFunctions {
-  static const uuid = Uuid();
   static String hashPassword(String password) {
     return BCrypt.hashpw(password, BCrypt.gensalt());
   }
-
-  static String get getRandomId => uuid.v4();
 
   static bool verifyPassword(String password, String hashed) {
     return BCrypt.checkpw(password, hashed);

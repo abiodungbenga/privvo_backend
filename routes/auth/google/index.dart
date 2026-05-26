@@ -5,11 +5,10 @@ import '../../../core/exceptions/app_exceptions.dart';
 import '../../../core/repository/google/google_signin_repo.dart';
 import '../../../core/response/my_response.dart';
 import '../../../core/services/redis/redis_service.dart';
-import '../../../shared/extensions/hash_extensions.dart';
 import '../../../shared/model/authentication_model.dart';
 import '../../../shared/model/subscription_plan_model.dart';
 import '../../../shared/model/user_meta.dart';
-import '../../../shared/utils/general_functions.dart';
+import '../../../shared/utils/id_generator.dart';
 
 Future<Response> onRequest(RequestContext context) {
   // TODO: implement route handler
@@ -38,7 +37,7 @@ Future<Response> onGoogleSignIn(RequestContext context) async {
     final AuthenticationModel user = AuthenticationModel(
       name: data.givenName ?? "",
       email: data.email ?? "",
-      id: GeneralFunctions.getRandomId,
+      id: getRandomId,
       userSubscription: UserSubscription(
         plan: SubscriptionPlan.free,
         status: "Ongoing",
