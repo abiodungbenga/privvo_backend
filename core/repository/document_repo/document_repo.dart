@@ -1,3 +1,4 @@
+import 'package:cloudinary/cloudinary.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:uuid/uuid.dart';
@@ -6,6 +7,8 @@ import '../../../shared/model/document_file_model.dart';
 import '../../../shared/model/document_model.dart';
 import '../../../shared/utils/general_functions.dart';
 import '../../data/mongo/mongo_service.dart';
+import '../../services/storage/storage_service.dart';
+import '../ocr/ocr_repository.dart';
 
 class DocumentRepo {
   Future<DocumentModel> createDocument(
@@ -38,21 +41,32 @@ class DocumentRepo {
       savedFilePath = 'documents/others';
     }
 
-    final file = await GeneralFunctions.storeFile(
-      uploadedFile: uploadedFile,
-      fileDirectory: savedFilePath,
+    final file =
+        await StorageService.instance.compressFile(uploadedFile: uploadedFile);
+    final cloudFile = await StorageService.instance.uploadFile(
+      uploadedFile: file,
+      folder: savedFilePath,
+      resourceType:
+          uploadedFile?.contentType.mimeType.startsWith('image/') ?? false
+              ? CloudinaryResourceType.image
+              : CloudinaryResourceType.auto,
     );
+
+    final extractedString = await OcrRepository.extractFromFIle(file!);
+    final data = extractedString.replaceAll('\n', ' ');
+
+    Map<String, dynamic> json = {"raw_text": data};
 
     final bytes = await file?.readAsBytes();
     final DocumentModel document = DocumentModel(
       title: title ?? "",
       description: description ?? "",
       documentType: documentType ?? "",
-      extractedData: extractedData ?? {},
+      extractedData: json,
       tags: tags ?? [],
       file: uploadedFile != null
           ? DocumentFileModel(
-              url: file?.path ?? "",
+              url: cloudFile?.secureUrl ?? "",
               fileName: uploadedFile?.name ?? "",
               mimeType: uploadedFile?.contentType.mimeType ?? "",
               extension: file?.path.split('.').last ?? "",

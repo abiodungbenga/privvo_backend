@@ -20,6 +20,10 @@ Future<Response> onRequest(RequestContext context) {
 Future<Response> onCreate(RequestContext context) async {
   final formData = await context.request.formData();
 
+  // final uri = context.;
+
+  // final baseUrl = '${uri.scheme}://${uri.host}';
+
   final String? title = formData.fields['title'];
   final String? description = formData.fields['description'];
   final String? documentType = formData.fields['documentType'];

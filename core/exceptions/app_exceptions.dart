@@ -19,6 +19,15 @@ class NotFoundException extends AppException {
         );
 }
 
+class FailedException extends AppException {
+  FailedException(String message)
+      : super(
+          message: message,
+          statusCode: 500,
+          code: 'FAILURE',
+        );
+}
+
 class DataBaseException extends AppException {
   DataBaseException(String message)
       : super(

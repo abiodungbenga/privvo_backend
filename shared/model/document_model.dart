@@ -63,9 +63,9 @@ class DocumentModel {
               json['customFields'] as Map,
             )
           : null,
-      extractedData: json['customFields'] != null
+      extractedData: json['extractedData'] != null
           ? Map<String, dynamic>.from(
-              json['customFields'] as Map,
+              json['extractedData'] as Map,
             )
           : null,
       isArchived: json['isArchived'] as bool? ?? false,

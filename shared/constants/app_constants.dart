@@ -25,6 +25,9 @@ class AppConstants {
   static String redisUsername = env['REDIS_USERNAME'] ?? '';
   static String redisPassword = env['REDIS_PASSWORD'] ?? '';
 
+  /// api keys
+  static String googleApiKey = env['GEMINI_API_KEY'] ?? '';
+
   ///Smtp
   static String smtpHost = env['SMTP_HOST'] ?? 'smtp.gmail.com';
   static String smtpUsername = env['SMTP_USERNAME'] ?? 'gbengaemma22@gmail.com';
