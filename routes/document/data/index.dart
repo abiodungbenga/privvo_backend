@@ -5,6 +5,7 @@ import '../../../core/data/mongo/mongo_service.dart';
 import '../../../core/exceptions/app_exceptions.dart';
 import '../../../core/repository/document_repo/document_repo.dart';
 import '../../../core/response/my_response.dart';
+import '../../../core/services/redis/redis_service.dart';
 
 Future<Response> onRequest(RequestContext context) {
   // TODO: implement route handler
@@ -70,9 +71,11 @@ Future<Response> onCreate(RequestContext context) async {
   }
 
   final mongoClient = context.read<MongoService>();
+  final redis = context.read<RedisService>();
   final userId = context.read<String>();
   final document = await context.read<DocumentRepo>().createDocument(
         mongoClient,
+        redis,
         file,
         customFields: customFields,
         shouldExtractData: shouldExtractData ?? true,

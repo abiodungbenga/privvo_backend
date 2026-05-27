@@ -44,6 +44,11 @@ class AuthRepository {
         value: refToken,
         ttl: const Duration(days: 7),
       );
+
+      await _redisService.redisClient.set(
+        key: 'encryptionKey:${user.id}',
+        value: user.encryptionKey ?? "",
+      );
       final collection =
           _mongoClient.db!.collection(AppConstants.usersCollection);
       await collection.insertOne(user.toJson());

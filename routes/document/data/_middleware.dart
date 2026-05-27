@@ -13,6 +13,7 @@ Handler middleware(Handler handler) {
   return handler
       .use(requestLogger())
       .use(MainMiddlewares.authMiddleware())
+      .use(MainMiddlewares.redisMiddleware())
       .use(MainMiddlewares.mongoMiddleware())
       .use(_provideDocumentRepository());
 }

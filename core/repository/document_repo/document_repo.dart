@@ -8,12 +8,15 @@ import '../../../shared/model/document_file_model.dart';
 import '../../../shared/model/document_model.dart';
 import '../../data/mongo/mongo_service.dart';
 import '../../services/ai/ai_service.dart';
+import '../../services/redis/redis_service.dart';
 import '../../services/storage/storage_service.dart';
 import '../ocr/ocr_repository.dart';
+import '../user_repo/user_repo.dart';
 
 class DocumentRepo {
   Future<DocumentModel> createDocument(
     MongoService mongoService,
+    RedisService redis,
     UploadedFile? uploadedFile, {
     String? title,
     bool shouldExtractData = true,
@@ -32,6 +35,9 @@ class DocumentRepo {
 
     const uuid = Uuid();
 
+    final encryptionKey =
+        await redis.redisClient.get(key: "encryptionKey:${userId}");
+
     String savedFilePath;
     if (uploadedFile?.contentType.mimeType.startsWith('image/') ?? false) {
       savedFilePath = 'documents/images';
@@ -45,7 +51,11 @@ class DocumentRepo {
 
     final file =
         await StorageService.instance.compressFile(uploadedFile: uploadedFile);
-    final cloudFile = await StorageService.instance.uploadFile(
+    final encyptedFile = await StorageService.instance
+        .encryptFile(file!.readAsBytesSync(), encryptionKey ?? "");
+
+    await StorageService.instance.uploadFile(
+      fileBytes: encyptedFile,
       uploadedFile: file,
       folder: savedFilePath,
       resourceType:
@@ -59,6 +69,7 @@ class DocumentRepo {
     final aiGen = await AiService.instance.generateText(
       bytes: file.readAsBytesSync(),
       mimeType: uploadedFile?.contentType.mimeType,
+      docInfo: data,
     );
 
     final aiGenRes = jsonDecode(aiGen);
@@ -75,7 +86,8 @@ class DocumentRepo {
       aiGenerated: shouldExtractData ? aiGenRes as Map<String, dynamic> : {},
       file: uploadedFile != null
           ? DocumentFileModel(
-              url: cloudFile?.secureUrl ?? "",
+              sizeBytesUint8List: encyptedFile,
+              // url: "",
               fileName: uploadedFile.name ?? "",
               mimeType: uploadedFile.contentType.mimeType ?? "",
               extension: file.path.split('.').last ?? "",

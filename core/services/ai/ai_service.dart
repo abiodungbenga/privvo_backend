@@ -14,14 +14,17 @@ class AiService {
   );
 
   Future<String> generateText(
-      {String? prompt, String? mimeType, List<int>? bytes}) async {
+      {String? prompt,
+      String? mimeType,
+      List<int>? bytes,
+      String? docInfo}) async {
     try {
       final response = await googleClient.models.generateContent(
         request: GenerateContentRequest(contents: [
           Content(
             parts: [
-              Part.text(prompt ?? documentExtractionPrompt),
-              Part.bytes(bytes ?? [], mimeType ?? "image/png")
+              Part.text(prompt ?? documentExtractionPrompt(docInfo ?? "")),
+              // Part.bytes(bytes ?? [], mimeType ?? "image/png")
             ],
           )
         ]),
@@ -31,8 +34,8 @@ class AiService {
         throw FailedException("Failed to Extract text");
       }
       return cleanJson(response.text ?? "");
-    } catch (e) {
-      throw FailedException(e.toString());
+    } on GoogleAIException catch (e) {
+      throw FailedException("${e.cause} ${e.message}");
     }
   }
 
@@ -45,10 +48,10 @@ class AiService {
         .trim();
   }
 
-  static const String documentExtractionPrompt = '''
+  static String documentExtractionPrompt(String docInfo) => '''
 You are a highly accurate AI document extraction engine.
 
-Your task is to analyze the uploaded document (provided as FILE BYTES) and extract ALL important visible information.
+Your task is to extract key information from the document extracted data provided which is $docInfo
 
 The document may be:
 - Bank receipt

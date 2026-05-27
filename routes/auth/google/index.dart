@@ -8,6 +8,7 @@ import '../../../core/services/redis/redis_service.dart';
 import '../../../shared/model/authentication_model.dart';
 import '../../../shared/model/subscription_plan_model.dart';
 import '../../../shared/model/user_meta.dart';
+import '../../../shared/utils/general_functions.dart';
 import '../../../shared/utils/id_generator.dart';
 
 Future<Response> onRequest(RequestContext context) {
@@ -38,6 +39,7 @@ Future<Response> onGoogleSignIn(RequestContext context) async {
       name: data.givenName ?? "",
       email: data.email ?? "",
       id: getRandomId,
+      encryptionKey: generateEncyptionKey(),
       userSubscription: UserSubscription(
         plan: SubscriptionPlan.free,
         status: "Ongoing",

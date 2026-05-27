@@ -49,6 +49,7 @@ Future<Response> onRegister(RequestContext context) async {
           name: username ?? "",
           email: email ?? "",
           id: getRandomId,
+          encryptionKey: generateEncyptionKey(),
           userSubscription: UserSubscription(
             plan: SubscriptionPlan.free,
             status: "Ongoing",

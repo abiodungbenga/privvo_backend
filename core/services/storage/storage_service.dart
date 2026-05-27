@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:cloudinary/cloudinary.dart';
 import 'package:dart_frog/dart_frog.dart';
-
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:image/image.dart' as img;
-
 import '../../exceptions/app_exceptions.dart';
 
 class StorageService {
@@ -19,11 +17,20 @@ class StorageService {
     cloudName: "drbwpijii",
   );
 
-  Future<File?> compressFile({UploadedFile? uploadedFile}) async {
+  Future<Uint8List> encryptFile(List<int> bytes, String keyString) async {
+    final key = encrypt.Key.fromUtf8(keyString.padRight(32).substring(0, 32));
+    final iv = encrypt.IV.fromLength(16);
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+    final encrypted = encrypter.encryptBytes(bytes, iv: iv);
+    return Uint8List.fromList(encrypted.bytes);
+  }
+
+  Future<File?> compressFile(
+      {UploadedFile? uploadedFile, String? userId}) async {
     final mimeType = uploadedFile?.contentType?.mimeType;
 
     final filePath =
-        '${DateTime.now().millisecondsSinceEpoch}_${uploadedFile?.name}';
+        '${DateTime.now().millisecondsSinceEpoch}_${userId ?? ""}_${uploadedFile?.name}';
     final bytes = await uploadedFile?.readAsBytes();
     final file = File(filePath);
     if (mimeType != null && mimeType.startsWith('image/')) {
@@ -46,13 +53,15 @@ class StorageService {
   Future<CloudinaryResponse?> uploadFile(
       {File? uploadedFile,
       String? folder,
+      List<int>? fileBytes,
+      String? userId,
       CloudinaryResourceType? resourceType}) async {
     try {
       final result = await cloudinary.upload(
         file: uploadedFile?.path,
-        fileBytes: uploadedFile?.readAsBytesSync(),
+        fileBytes: fileBytes ?? uploadedFile?.readAsBytesSync(),
         fileName:
-            "${DateTime.now().millisecondsSinceEpoch}_${uploadedFile?.path.split('.').first}",
+            "${DateTime.now().millisecondsSinceEpoch}_${userId}_${uploadedFile?.path.split('.').first}",
         folder: folder ?? "images",
         resourceType: resourceType ?? CloudinaryResourceType.image,
       );

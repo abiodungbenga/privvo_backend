@@ -7,6 +7,7 @@ class AuthenticationModel {
   final String? refreshToken;
   final String name;
   final String email;
+  final String? encryptionKey;
   final String? password;
   final UserMeta? userMeta;
   final UserSubscription? userSubscription;
@@ -14,6 +15,7 @@ class AuthenticationModel {
   AuthenticationModel({
     this.id,
     this.refreshToken,
+    this.encryptionKey,
     this.userMeta,
     this.userSubscription,
     this.token,
@@ -56,6 +58,7 @@ class AuthenticationModel {
       'id': id,
       'name': name,
       'email': email,
+      if (encryptionKey != null) "encryptionKey": encryptionKey,
       if (password != null) 'password': password,
       if (userMeta != null) 'userMeta': userMeta?.toJson(),
       if (userSubscription != null)
