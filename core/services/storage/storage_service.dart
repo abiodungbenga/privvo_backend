@@ -52,7 +52,7 @@ class StorageService {
         file: uploadedFile?.path,
         fileBytes: uploadedFile?.readAsBytesSync(),
         fileName:
-            "${DateTime.now().millisecondsSinceEpoch}_${uploadedFile?.path}",
+            "${DateTime.now().millisecondsSinceEpoch}_${uploadedFile?.path.split('.').first}",
         folder: folder ?? "images",
         resourceType: resourceType ?? CloudinaryResourceType.image,
       );

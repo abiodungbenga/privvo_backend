@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:cloudinary/cloudinary.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:mongo_dart/mongo_dart.dart';
@@ -5,8 +6,8 @@ import 'package:uuid/uuid.dart';
 import '../../../shared/constants/app_constants.dart';
 import '../../../shared/model/document_file_model.dart';
 import '../../../shared/model/document_model.dart';
-import '../../../shared/utils/general_functions.dart';
 import '../../data/mongo/mongo_service.dart';
+import '../../services/ai/ai_service.dart';
 import '../../services/storage/storage_service.dart';
 import '../ocr/ocr_repository.dart';
 
@@ -15,6 +16,7 @@ class DocumentRepo {
     MongoService mongoService,
     UploadedFile? uploadedFile, {
     String? title,
+    bool shouldExtractData = true,
     String? description,
     String? documentType,
     Map<String, dynamic>? extractedData,
@@ -54,27 +56,33 @@ class DocumentRepo {
 
     final extractedString = await OcrRepository.extractFromFIle(file!);
     final data = extractedString.replaceAll('\n', ' ');
+    final aiGen = await AiService.instance.generateText(
+      bytes: file.readAsBytesSync(),
+      mimeType: uploadedFile?.contentType.mimeType,
+    );
 
-    Map<String, dynamic> json = {"raw_text": data};
+    final aiGenRes = jsonDecode(aiGen);
 
-    final bytes = await file?.readAsBytes();
+    final json = {"raw_text": data};
+
+    final bytes = await file.readAsBytes();
     final DocumentModel document = DocumentModel(
       title: title ?? "",
       description: description ?? "",
       documentType: documentType ?? "",
-      extractedData: json,
+      extractedData: shouldExtractData ? json : extractedData ?? {},
       tags: tags ?? [],
+      aiGenerated: shouldExtractData ? aiGenRes as Map<String, dynamic> : {},
       file: uploadedFile != null
           ? DocumentFileModel(
               url: cloudFile?.secureUrl ?? "",
-              fileName: uploadedFile?.name ?? "",
-              mimeType: uploadedFile?.contentType.mimeType ?? "",
-              extension: file?.path.split('.').last ?? "",
-              sizeMb: (bytes?.length ?? 0) / (1024 * 1024),
-              sizeBytes: bytes?.length ?? 0,
-              isImage:
-                  uploadedFile?.contentType.mimeType.startsWith('image/') ??
-                      false)
+              fileName: uploadedFile.name ?? "",
+              mimeType: uploadedFile.contentType.mimeType ?? "",
+              extension: file.path.split('.').last ?? "",
+              sizeMb: (bytes.length ?? 0) / (1024 * 1024),
+              sizeBytes: bytes.length ?? 0,
+              isImage: uploadedFile.contentType.mimeType.startsWith('image/') ??
+                  false)
           : null,
       id: uuid.v4(),
       thumbnailUrl: thumbnailUrl ?? "",
@@ -85,7 +93,7 @@ class DocumentRepo {
       createdAt: DateTime.now(),
     );
 
-    await collection.insertOne(document.toJson());
+    await collection.insertOne(document.toJson()).whenComplete(file.delete);
     return document;
   }
 

@@ -17,6 +17,8 @@ class DocumentModel {
 
   final Map<String, dynamic>? customFields;
 
+  final Map<String, dynamic>? aiGenerated;
+
   final Map<String, dynamic>? extractedData;
 
   final bool isArchived;
@@ -28,6 +30,7 @@ class DocumentModel {
   DocumentModel({
     this.id,
     this.extractedData,
+    this.aiGenerated,
     required this.userId,
     required this.title,
     this.description,
@@ -63,6 +66,11 @@ class DocumentModel {
               json['customFields'] as Map,
             )
           : null,
+      aiGenerated: json['aiGenerated'] != null
+          ? Map<String, dynamic>.from(
+              json['customFields'] as Map,
+            )
+          : null,
       extractedData: json['extractedData'] != null
           ? Map<String, dynamic>.from(
               json['extractedData'] as Map,
@@ -85,6 +93,7 @@ class DocumentModel {
       'userId': userId,
       'title': title,
       'extractedData': extractedData,
+      'aiGenerated': aiGenerated,
       'description': description,
       'documentType': documentType,
       'tags': tags,

@@ -19,6 +19,7 @@ dependencies:
   uuid: ^4.5.3
   image: ^4.8.0
   cloudinary: ^1.2.0
+  googleai_dart: ^7.0.0
   http: ^1.6.0
 
 dev_dependencies:

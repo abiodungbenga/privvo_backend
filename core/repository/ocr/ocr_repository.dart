@@ -28,8 +28,9 @@ class OcrRepository {
       if (process.exitCode != 0) {
         throw Exception(process.stderr);
       }
+      final file = File('$outputBase.txt');
 
-      return File('$outputBase.txt').readAsString();
+      return file.readAsString().whenComplete(file.delete);
     } catch (e) {
       throw FailedException("Failed to generate text $e");
     }

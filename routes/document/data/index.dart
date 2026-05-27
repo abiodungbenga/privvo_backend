@@ -39,9 +39,14 @@ Future<Response> onCreate(RequestContext context) async {
       ? jsonDecode(customFieldsRaw) as Map<String, dynamic>
       : null;
 
-  final bool? isArchived = formData.fields['isArchived'] == 'true';
+  final bool? isArchived =
+      bool.tryParse(formData.fields['isArchived'] ?? 'false');
 
-  final bool? isFavorite = formData.fields['isFavorite'] == 'true';
+  final bool? isFavorite =
+      bool.tryParse(formData.fields['isFavorite'] ?? 'true');
+
+  final bool? shouldExtractData =
+      bool.tryParse(formData.fields['shouldExtractData'] ?? 'true');
 
   final file = formData.files['file'];
 
@@ -70,6 +75,7 @@ Future<Response> onCreate(RequestContext context) async {
         mongoClient,
         file,
         customFields: customFields,
+        shouldExtractData: shouldExtractData ?? true,
         description: description,
         documentType: documentType,
         extractedData: {},
