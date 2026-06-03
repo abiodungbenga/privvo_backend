@@ -1,3 +1,4 @@
+import 'package:deepseek/deepseek.dart';
 import 'package:googleai_dart/googleai_dart.dart';
 import '../../../shared/constants/app_constants.dart';
 import '../../exceptions/app_exceptions.dart';
@@ -6,6 +7,11 @@ class AiService {
   AiService._privateConstructor();
   static final AiService instance = AiService._privateConstructor();
   factory AiService() => instance;
+
+  final deepSeek = DeepSeek(
+    AppConstants.deepSeekApiKey,
+    // baseUrl: 'https://api.deepseek.com' (default)
+  );
   final googleClient = GoogleAIClient(
     config: GoogleAIConfig.googleAI(
       authProvider: ApiKeyProvider(AppConstants.googleApiKey),
@@ -30,12 +36,44 @@ class AiService {
         ]),
         model: 'gemini-2.5-flash',
       );
+      final blockReason = response.promptFeedback?.blockReason;
+      final shouldFallback = blockReason == FinishReason.tooManyToolCalls ||
+          blockReason == FinishReason.maxTokens ||
+          blockReason == FinishReason.other ||
+          blockReason == FinishReason.stop ||
+          !response.hasContent ||
+          (response.text == null || response.text!.trim().isEmpty);
+      if (shouldFallback) {
+        return await generateTextWithDeepSeek(docInfo: docInfo);
+      }
       if (!response.hasContent) {
         throw FailedException("Failed to Extract text");
       }
       return cleanJson(response.text ?? "");
     } on GoogleAIException catch (e) {
-      throw FailedException("${e.cause} ${e.message}");
+      throw FailedException(e.message);
+    }
+  }
+
+  Future<String> generateTextWithDeepSeek({String? docInfo}) async {
+    try {
+      final Completion response = await deepSeek.createChat(
+        messages: [
+          Message(
+              role: "user", content: documentExtractionPrompt(docInfo ?? ""))
+        ],
+        model: Models.reasoner.name,
+        options: {
+          "temperature": 1.0,
+          "max_tokens": 4096,
+        },
+      );
+      if (response.text.isEmpty) {
+        throw FailedException("Failed to Extract text");
+      }
+      return cleanJson(response.text);
+    } on DeepSeekException catch (e) {
+      throw FailedException(e.message);
     }
   }
 

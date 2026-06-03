@@ -3,7 +3,9 @@ import '../../../shared/constants/app_constants.dart';
 import '../../exceptions/app_exceptions.dart';
 
 class RedisService {
-  RedisService._();
+  RedisService._() {
+    print('redis init');
+  }
   static final instance = RedisService._();
 
   final RedisClient redisClient = RedisClient(

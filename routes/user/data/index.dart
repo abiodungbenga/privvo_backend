@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:dart_frog/dart_frog.dart';
 import '../../../core/data/mongo/mongo_service.dart';
 import '../../../core/repository/user_repo/user_repo.dart';
 import '../../../core/response/my_response.dart';
+import '../../../core/services/redis/redis_service.dart';
+import '../../../core/services/storage/storage_service.dart';
 import '../../../shared/model/user_meta.dart';
 import '../../../shared/model/user_model.dart';
 
@@ -27,29 +30,40 @@ Future<Response> onGet(RequestContext context) async {
 }
 
 Future<Response> onUpdate(RequestContext context) async {
-  final body = await context.request.json() as Map<String, dynamic>;
-  final String? name = body['name'] as String?;
-  final String? language = body['language'] as String?;
+  final formData = await context.request.formData();
+  final String? name = formData.fields['name'];
+  final String? language = formData.fields['language'];
 
-  final String? profileUrl = body['profileUrl'] as String?;
+  final UploadedFile? profileFile = formData.files['profileFile'];
   final int? storageLimitMb =
-      int.tryParse(body['storageLimitMb'] as String? ?? "");
+      int.tryParse(formData.fields['storageLimitMb'] ?? "");
   final int? storageUsedMb =
-      int.tryParse(body['storageUsedMb'] as String? ?? "");
+      int.tryParse(formData.fields['storageUsedMb'] ?? "");
 
-  final bool? isDark = bool.tryParse(body['isDark'] as String? ?? "");
+  final bool? isDark = bool.tryParse(formData.fields['isDark'] ?? "");
 
+  if (formData.isEmpty) {
+    return errorResponse('No data provided', statusCode: HttpStatus.badRequest);
+  }
   if (name != null && name.length < 3) {
     return errorResponse('Name must be at least 3 characters long',
         statusCode: HttpStatus.badRequest);
-  }
-  if (body.isEmpty) {
-    return errorResponse('No data provided', statusCode: HttpStatus.badRequest);
   }
 
   final mongoClient = context.read<MongoService>();
   final userId = context.read<String>();
   final prevData = await context.read<UserRepo>().getUser(userId, mongoClient);
+  String? profileUrl;
+  if (profileFile != null) {
+    final file =
+        await StorageService.instance.compressFile(uploadedFile: profileFile);
+    final cloudinaryUrl = await StorageService.instance.uploadFile(
+      fileBytes: file?.readAsBytesSync(),
+      uploadedFile: file,
+      folder: "documents/images",
+    );
+    profileUrl = cloudinaryUrl?.secureUrl;
+  }
   final user = await context.read<UserRepo>().updateUser(
       UserModel(
         name: name ?? "",

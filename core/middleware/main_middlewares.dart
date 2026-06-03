@@ -49,8 +49,15 @@ class MainMiddlewares {
 
         final userId = JwtUtil.getUserId(token);
 
+        final verifyT = JwtUtil.verifyToken(token);
+        if (verifyT == null ||
+            verifyT.payload == null ||
+            verifyT.payload['type'] != 'access') {
+          return errorResponse('Invalid access token', statusCode: 401);
+        }
+
         if (userId == null) {
-          return errorResponse('Invalid token', statusCode: 401);
+          return errorResponse('Invalid access token', statusCode: 401);
         }
 
         return handler.use(

@@ -28,6 +28,8 @@ class AppConstants {
   /// api keys
   static String googleApiKey = env['GEMINI_API_KEY'] ?? '';
 
+  static String deepSeekApiKey = env['DEEP_SEEK_API_KEY'] ?? '';
+
   ///Smtp
   static String smtpHost = env['SMTP_HOST'] ?? 'smtp.gmail.com';
   static String smtpUsername = env['SMTP_USERNAME'] ?? 'gbengaemma22@gmail.com';
