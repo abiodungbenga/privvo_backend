@@ -15,7 +15,7 @@ class RedisService {
       // password: AppConstants.redisPassword,
       // username: AppConstants.redisUsername,
     ),
-    command: RedisCommandOptions(),
+    command: const RedisCommandOptions(),
   );
 
   bool _initialized = false;
@@ -31,7 +31,7 @@ class RedisService {
       await redisClient.connect();
       _initialized = true;
     } on RedisException catch (e) {
-      throw DataBaseException("redis error ${e.message}");
+      throw DataBaseException('redis error ${e.message}');
     }
   }
 

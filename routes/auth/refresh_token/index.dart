@@ -13,32 +13,38 @@ Future<Response> onRequest(RequestContext context) {
   return switch (context.request.method) {
     HttpMethod.post => onRefreshToken(context),
     _ => Future.value(
-        errorResponse("Method not allowed",
-            statusCode: HttpStatus.methodNotAllowed),
+        errorResponse(
+          'Method not allowed',
+          statusCode: HttpStatus.methodNotAllowed,
+        ),
       ),
   };
 }
 
 Future<Response> onRefreshToken(RequestContext context) async {
   final body = await context.request.json() as Map<String, dynamic>;
-  String? refToken = body['refreshToken'] as String?;
+  var refToken = body['refreshToken'] as String?;
   if (refToken == null) {
     throw ValidationException({
-      'refreshToken': ['refreshToken is required']
+      'refreshToken': ['refreshToken is required'],
     });
   }
   final verifyT = JwtUtil.verifyToken(refToken);
   if (verifyT == null ||
       verifyT.payload == null ||
-      verifyT.payload["type"] != "refresh") {
-    return errorResponse('Invalid or expired refresh token',
-        statusCode: HttpStatus.unauthorized);
+      verifyT.payload['type'] != 'refresh') {
+    return errorResponse(
+      'Invalid or expired refresh token',
+      statusCode: HttpStatus.unauthorized,
+    );
   }
 
   final refUserId = JwtUtil.getUserId(refToken);
   if (refUserId == null) {
-    return errorResponse('Invalid refresh token',
-        statusCode: HttpStatus.unauthorized);
+    return errorResponse(
+      'Invalid refresh token',
+      statusCode: HttpStatus.unauthorized,
+    );
   }
   final redisService = context.read<RedisService>();
   final authRepo = context.read<AuthRepository>();

@@ -1,9 +1,8 @@
 typedef ValidationRule = String? Function(dynamic value);
 
 class ValidatorSchema {
-  final Map<String, List<ValidationRule>> rules;
-
   ValidatorSchema(this.rules);
+  final Map<String, List<ValidationRule>> rules;
 
   Map<String, String>? validate(Map<String, dynamic> data) {
     final errors = <String, String>{};

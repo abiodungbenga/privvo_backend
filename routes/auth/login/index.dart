@@ -12,16 +12,18 @@ Future<Response> onRequest(RequestContext context) {
   return switch (context.request.method) {
     HttpMethod.post => onLogin(context),
     _ => Future.value(
-        errorResponse("Method not allowed",
-            statusCode: HttpStatus.methodNotAllowed),
+        errorResponse(
+          'Method not allowed',
+          statusCode: HttpStatus.methodNotAllowed,
+        ),
       ),
   };
 }
 
 Future<Response> onLogin(RequestContext context) async {
   final body = await context.request.json() as Map<String, dynamic>;
-  final String? email = body['email'] as String?;
-  final String? password = body['password'] as String?;
+  final email = body['email'] as String?;
+  final password = body['password'] as String?;
 
   final validator = ValidatorSchema({
     'email': [ValidationRules.required(), ValidationRules.email()],
@@ -38,6 +40,6 @@ Future<Response> onLogin(RequestContext context) async {
 
   final user = await context
       .read<AuthRepository>()
-      .loginUser(email ?? "", password ?? "", mongoClient, redisService);
+      .loginUser(email ?? '', password ?? '', mongoClient, redisService);
   return successResponse(user);
 }

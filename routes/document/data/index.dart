@@ -12,8 +12,10 @@ Future<Response> onRequest(RequestContext context) {
   return switch (context.request.method) {
     HttpMethod.post => onCreate(context),
     _ => Future.value(
-        errorResponse("Method not allowed",
-            statusCode: HttpStatus.methodNotAllowed),
+        errorResponse(
+          'Method not allowed',
+          statusCode: HttpStatus.methodNotAllowed,
+        ),
       ),
   };
 }
@@ -25,49 +27,48 @@ Future<Response> onCreate(RequestContext context) async {
 
   // final baseUrl = '${uri.scheme}://${uri.host}';
 
-  final String? title = formData.fields['title'];
-  final String? description = formData.fields['description'];
-  final String? documentType = formData.fields['documentType'];
+  final title = formData.fields['title'];
+  final description = formData.fields['description'];
+  final documentType = formData.fields['documentType'];
 
-  final List<String>? tags = formData.fields['tags'] != null
-      ? formData.fields['tags']!.split(',')
-      : null;
+  final tags = formData.fields['tags']?.split(',');
 
-  final String? thumbnailUrl = formData.fields['thumbnailUrl'];
+  final thumbnailUrl = formData.fields['thumbnailUrl'];
 
-  final String? customFieldsRaw = formData.fields['customFields'];
-  final Map<String, dynamic>? customFields = customFieldsRaw != null
+  final customFieldsRaw = formData.fields['customFields'];
+  final customFields = customFieldsRaw != null
       ? jsonDecode(customFieldsRaw) as Map<String, dynamic>
       : null;
 
-  final bool? isArchived =
-      bool.tryParse(formData.fields['isArchived'] ?? 'false');
+  final isArchived = bool.tryParse(formData.fields['isArchived'] ?? 'false');
 
-  final bool? isFavorite =
-      bool.tryParse(formData.fields['isFavorite'] ?? 'true');
+  final isFavorite = bool.tryParse(formData.fields['isFavorite'] ?? 'true');
 
-  final bool? shouldExtractData =
+  final shouldExtractData =
       bool.tryParse(formData.fields['shouldExtractData'] ?? 'true');
 
   final file = formData.files['file'];
 
   if (file == null) {
-    throw BadRequestException("uploaded is null!");
+    throw BadRequestException('uploaded is null!');
   }
 
   if (title == null) {
-    return errorResponse("Title is required",
-        statusCode: HttpStatus.badRequest);
+    return errorResponse(
+      'Title is required',
+    );
   }
 
   if (description == null) {
-    return errorResponse("Description is required",
-        statusCode: HttpStatus.badRequest);
+    return errorResponse(
+      'Description is required',
+    );
   }
 
   if (documentType == null) {
-    return errorResponse("Document type is required",
-        statusCode: HttpStatus.badRequest);
+    return errorResponse(
+      'Document type is required',
+    );
   }
 
   final mongoClient = context.read<MongoService>();

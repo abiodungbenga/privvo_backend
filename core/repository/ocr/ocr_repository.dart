@@ -3,10 +3,10 @@ import '../../exceptions/app_exceptions.dart';
 
 class OcrRepository {
   static Future<String> extractFromFIle(File file) async {
-    if (file.path.endsWith(".pdf")) {
-      return Future.value("Not pdf extractor not currently availabel");
+    if (file.path.endsWith('.pdf')) {
+      return Future.value('Not pdf extractor not currently availabel');
     }
-    return generate(file.path, "eng");
+    return generate(file.path, 'eng');
   }
 
   static Future<String> generate(String filePath, String language) async {
@@ -22,7 +22,7 @@ class OcrRepository {
 
       final process = await Process.run(
         getTesseractPath(),
-        [filePath, outputBase, "--psm", "6", "-l", language],
+        [filePath, outputBase, '--psm', '6', '-l', language],
       );
 
       if (process.exitCode != 0) {
@@ -32,7 +32,7 @@ class OcrRepository {
 
       return file.readAsString().whenComplete(file.delete);
     } catch (e) {
-      throw FailedException("Failed to generate text $e");
+      throw FailedException('Failed to generate text $e');
     }
   }
 }

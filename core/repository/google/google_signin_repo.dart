@@ -10,30 +10,34 @@ import '../../services/jwt/jwt_util.dart';
 import '../../services/redis/redis_service.dart';
 
 class GoogleSigninRepository {
-  var client = http.Client();
+  http.Client client = http.Client();
 
   Future<GoogleSignInModel?> initiateGoogleSignIn({String? idToken}) async {
     try {
       final url = Uri.parse(
-          'https://oauth2.googleapis.com/tokeninfo?id_token=$idToken');
+        'https://oauth2.googleapis.com/tokeninfo?id_token=$idToken',
+      );
       final response = await client.get(url);
 
-      log("Google Signin Response: ${response.body}");
+      log('Google Signin Response: ${response.body}');
       if (response.statusCode == 200 || response.statusCode == 201) {
         return GoogleSignInModel.fromJson(
-            json.decode(response.body) as Map<String, dynamic>);
+          json.decode(response.body) as Map<String, dynamic>,
+        );
       }
     } catch (e) {
       throw BadRequestException('Invalid IdToken $e');
     }
+    return null;
   }
 
   Future<AuthenticationModel?> signInWithGoogle(
-      AuthenticationModel user,
-      String idToken,
-      GoogleSignInModel? googleUser,
-      MongoService mongoService,
-      RedisService redisService) async {
+    AuthenticationModel user,
+    String idToken,
+    GoogleSignInModel? googleUser,
+    MongoService mongoService,
+    RedisService redisService,
+  ) async {
     final collection =
         mongoService.db!.collection(AppConstants.usersCollection);
 
@@ -42,8 +46,11 @@ class GoogleSigninRepository {
     });
 
     if (existingUser != null && googleUser != null) {
-      final refToken = JwtUtil.generateToken(user.id ?? "",
-          duration: const Duration(days: 7), type: 'refresh');
+      final refToken = JwtUtil.generateToken(
+        user.id ?? '',
+        duration: const Duration(days: 7),
+        type: 'refresh',
+      );
 
       await redisService.redisClient.set(
         key: 'refresh:${user.id}',
@@ -51,14 +58,17 @@ class GoogleSigninRepository {
         ttl: const Duration(days: 7),
       );
 
-      final token = JwtUtil.generateToken(user.id ?? "");
+      final token = JwtUtil.generateToken(user.id ?? '');
       return AuthenticationModel.fromJson(existingUser)
           .copyWith(token: token, refreshToken: refToken);
     }
     if (googleUser != null) {
       if (mongoService.db != null) {
-        final refToken = JwtUtil.generateToken(user.id ?? "",
-            duration: const Duration(days: 7), type: 'refresh');
+        final refToken = JwtUtil.generateToken(
+          user.id ?? '',
+          duration: const Duration(days: 7),
+          type: 'refresh',
+        );
 
         await redisService.redisClient.set(
           key: 'refresh:${user.id}',
@@ -66,7 +76,7 @@ class GoogleSigninRepository {
           ttl: const Duration(days: 7),
         );
 
-        final token = JwtUtil.generateToken(user.id ?? "");
+        final token = JwtUtil.generateToken(user.id ?? '');
         final collection =
             mongoService.db!.collection(AppConstants.usersCollection);
         await collection.insertOne(user.toJson());

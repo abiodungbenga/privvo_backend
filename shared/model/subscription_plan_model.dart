@@ -1,9 +1,4 @@
 class UserSubscription {
-  final SubscriptionPlan plan;
-  final String status;
-  final DateTime? startedAt;
-  final DateTime? expiresAt;
-
   UserSubscription({
     required this.plan,
     required this.status,
@@ -26,6 +21,10 @@ class UserSubscription {
           : null,
     );
   }
+  final SubscriptionPlan plan;
+  final String status;
+  final DateTime? startedAt;
+  final DateTime? expiresAt;
 
   Map<String, dynamic> toJson() {
     return {

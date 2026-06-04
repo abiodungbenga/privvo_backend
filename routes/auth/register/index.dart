@@ -19,17 +19,19 @@ Future<Response> onRequest(RequestContext context) {
   return switch (context.request.method) {
     HttpMethod.post => onRegister(context),
     _ => Future.value(
-        errorResponse("Method not allowed",
-            statusCode: HttpStatus.methodNotAllowed),
+        errorResponse(
+          'Method not allowed',
+          statusCode: HttpStatus.methodNotAllowed,
+        ),
       ),
   };
 }
 
 Future<Response> onRegister(RequestContext context) async {
   final body = await context.request.json() as Map<String, dynamic>;
-  final String? username = body['username'] as String?;
-  final String? email = body['email'] as String?;
-  final String? password = body['password'] as String?;
+  final username = body['username'] as String?;
+  final email = body['email'] as String?;
+  final password = body['password'] as String?;
 
   final validator = ValidatorSchema({
     'email': [ValidationRules.required(), ValidationRules.email()],
@@ -46,24 +48,23 @@ Future<Response> onRegister(RequestContext context) async {
   final redisService = context.read<RedisService>();
   final user = await context.read<AuthRepository>().createUser(
         AuthenticationModel(
-          name: username ?? "",
-          email: email ?? "",
+          name: username ?? '',
+          email: email ?? '',
           id: getRandomId,
           encryptionKey: generateEncyptionKey(),
           userSubscription: UserSubscription(
             plan: SubscriptionPlan.free,
-            status: "Ongoing",
+            status: 'Ongoing',
             startedAt: DateTime.now(),
           ),
           userMeta: UserMeta(
             createdAt: DateTime.now(),
-            language: "English",
+            language: 'English',
             lastLoggedIn: DateTime.now(),
-            profileUrl: null,
             storageLimitMb: 1000,
             storageUsedMb: 0,
           ),
-          password: GeneralFunctions.hashPassword(password ?? ""),
+          password: GeneralFunctions.hashPassword(password ?? ''),
         ),
         mongoClient,
         redisService,

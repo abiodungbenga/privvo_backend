@@ -16,8 +16,10 @@ Future<Response> onRequest(RequestContext context) {
   return switch (context.request.method) {
     HttpMethod.post => onGoogleSignIn(context),
     _ => Future.value(
-        errorResponse("Method not allowed",
-            statusCode: HttpStatus.methodNotAllowed),
+        errorResponse(
+          'Method not allowed',
+          statusCode: HttpStatus.methodNotAllowed,
+        ),
       ),
   };
 }
@@ -27,7 +29,7 @@ Future<Response> onGoogleSignIn(RequestContext context) async {
   final idToken = body['idToken'] as String?;
   if (idToken == null) {
     throw ValidationException({
-      'idToken': ['idToken is required']
+      'idToken': ['idToken is required'],
     });
   }
   final googleSigninRepo = context.read<GoogleSigninRepository>();
@@ -35,32 +37,36 @@ Future<Response> onGoogleSignIn(RequestContext context) async {
   final redisService = context.read<RedisService>();
   final data = await googleSigninRepo.initiateGoogleSignIn(idToken: idToken);
   if (data != null) {
-    final AuthenticationModel user = AuthenticationModel(
-      name: data.givenName ?? "",
-      email: data.email ?? "",
+    final user = AuthenticationModel(
+      name: data.givenName ?? '',
+      email: data.email ?? '',
       id: getRandomId,
       encryptionKey: generateEncyptionKey(),
       userSubscription: UserSubscription(
         plan: SubscriptionPlan.free,
-        status: "Ongoing",
+        status: 'Ongoing',
         startedAt: DateTime.now(),
       ),
       userMeta: UserMeta(
         createdAt: DateTime.now(),
-        language: "English",
-        isDark: false,
-        isEmailVerified: bool.tryParse(data.emailVerified ?? "false") ?? false,
-        signInMethod: "google",
+        language: 'English',
+        isEmailVerified: bool.tryParse(data.emailVerified ?? 'false') ?? false,
+        signInMethod: 'google',
         lastLoggedIn: DateTime.now(),
-        profileUrl: data.picture ?? "",
+        profileUrl: data.picture ?? '',
         storageLimitMb: 1000,
         storageUsedMb: 0,
       ),
-      password: "",
+      password: '',
     );
     final authUser = await googleSigninRepo.signInWithGoogle(
-        user, idToken, data, mongoService, redisService);
+      user,
+      idToken,
+      data,
+      mongoService,
+      redisService,
+    );
     return successResponse(authUser);
   }
-  return errorResponse("Google sign in failed!");
+  return errorResponse('Google sign in failed!');
 }

@@ -23,11 +23,12 @@ class VerificationService {
     );
   }
 
-  static void sendOtp(String email, RedisService redis, String userId) async {
+  static Future<void> sendOtp(
+      String email, RedisService redis, String userId) async {
     EmailOTP.sendOTP(email: email);
     await redis.redisClient.set(
-      key: 'otp:${userId}',
-      value: sentOtp ?? "",
+      key: 'otp:$userId',
+      value: sentOtp ?? '',
       ttl: const Duration(minutes: 5),
     );
   }

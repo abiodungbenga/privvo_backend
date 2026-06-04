@@ -1,4 +1,23 @@
 class GoogleSignInModel {
+  factory GoogleSignInModel.fromJson(Map<String, dynamic> json) {
+    return GoogleSignInModel(
+      iss: json["iss"] as String?,
+      azp: json["azp"] as String?,
+      aud: json["aud"] as String?,
+      sub: json["sub"] as String?,
+      email: json["email"] as String?,
+      emailVerified: json["email_verified"] as String?,
+      atHash: json["at_hash"] as String?,
+      name: json["name"] as String?,
+      picture: json["picture"] as String?,
+      givenName: json["given_name"] as String?,
+      iat: json["iat"] as String?,
+      exp: json["exp"] as String?,
+      alg: json["alg"] as String?,
+      kid: json["kid"] as String?,
+      typ: json["typ"] as String?,
+    );
+  }
   GoogleSignInModel({
     required this.iss,
     required this.azp,
@@ -33,41 +52,21 @@ class GoogleSignInModel {
   final String? kid;
   final String? typ;
 
-  factory GoogleSignInModel.fromJson(Map<String, dynamic> json) {
-    return GoogleSignInModel(
-      iss: json["iss"] as String?,
-      azp: json["azp"] as String?,
-      aud: json["aud"] as String?,
-      sub: json["sub"] as String?,
-      email: json["email"] as String?,
-      emailVerified: json["email_verified"] as String?,
-      atHash: json["at_hash"] as String?,
-      name: json["name"] as String?,
-      picture: json["picture"] as String?,
-      givenName: json["given_name"] as String?,
-      iat: json["iat"] as String?,
-      exp: json["exp"] as String?,
-      alg: json["alg"] as String?,
-      kid: json["kid"] as String?,
-      typ: json["typ"] as String?,
-    );
-  }
-
   Map<String, dynamic> toJson() => {
-        "iss": iss,
-        "azp": azp,
-        "aud": aud,
-        "sub": sub,
-        "email": email,
-        "email_verified": emailVerified,
-        "at_hash": atHash,
-        "name": name,
-        "picture": picture,
-        "given_name": givenName,
-        "iat": iat,
-        "exp": exp,
-        "alg": alg,
-        "kid": kid,
-        "typ": typ,
+        'iss': iss,
+        'azp': azp,
+        'aud': aud,
+        'sub': sub,
+        'email': email,
+        'email_verified': emailVerified,
+        'at_hash': atHash,
+        'name': name,
+        'picture': picture,
+        'given_name': givenName,
+        'iat': iat,
+        'exp': exp,
+        'alg': alg,
+        'kid': kid,
+        'typ': typ,
       };
 }

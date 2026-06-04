@@ -16,8 +16,10 @@ Future<Response> onRequest(RequestContext context) {
     HttpMethod.delete => onDelete(context),
     HttpMethod.put => onUpdate(context),
     _ => Future.value(
-        errorResponse("Method not allowed",
-            statusCode: HttpStatus.methodNotAllowed),
+        errorResponse(
+          'Method not allowed',
+          statusCode: HttpStatus.methodNotAllowed,
+        ),
       ),
   };
 }
@@ -31,23 +33,22 @@ Future<Response> onGet(RequestContext context) async {
 
 Future<Response> onUpdate(RequestContext context) async {
   final formData = await context.request.formData();
-  final String? name = formData.fields['name'];
-  final String? language = formData.fields['language'];
+  final name = formData.fields['name'];
+  final language = formData.fields['language'];
 
-  final UploadedFile? profileFile = formData.files['profileFile'];
-  final int? storageLimitMb =
-      int.tryParse(formData.fields['storageLimitMb'] ?? "");
-  final int? storageUsedMb =
-      int.tryParse(formData.fields['storageUsedMb'] ?? "");
+  final profileFile = formData.files['profileFile'];
+  final storageLimitMb = int.tryParse(formData.fields['storageLimitMb'] ?? '');
+  final storageUsedMb = int.tryParse(formData.fields['storageUsedMb'] ?? '');
 
-  final bool? isDark = bool.tryParse(formData.fields['isDark'] ?? "");
+  final isDark = bool.tryParse(formData.fields['isDark'] ?? '');
 
   if (formData.isEmpty) {
-    return errorResponse('No data provided', statusCode: HttpStatus.badRequest);
+    return errorResponse('No data provided');
   }
   if (name != null && name.length < 3) {
-    return errorResponse('Name must be at least 3 characters long',
-        statusCode: HttpStatus.badRequest);
+    return errorResponse(
+      'Name must be at least 3 characters long',
+    );
   }
 
   final mongoClient = context.read<MongoService>();
@@ -60,30 +61,31 @@ Future<Response> onUpdate(RequestContext context) async {
     final cloudinaryUrl = await StorageService.instance.uploadFile(
       fileBytes: file?.readAsBytesSync(),
       uploadedFile: file,
-      folder: "documents/images",
+      folder: 'documents/images',
     );
     profileUrl = cloudinaryUrl?.secureUrl;
   }
   final user = await context.read<UserRepo>().updateUser(
-      UserModel(
-        name: name ?? "",
-        email: prevData.email,
-        userSubscription: prevData.userSubscription,
-        userMeta: UserMeta(
-          signInMethod: prevData.userMeta?.signInMethod,
-          updatedAt: DateTime.now(),
-          isEmailVerified: prevData.userMeta?.isEmailVerified ?? false,
-          createdAt: prevData.userMeta?.createdAt,
-          lastLoggedIn: prevData.userMeta?.lastLoggedIn,
-          profileUrl: profileUrl ?? prevData.userMeta?.profileUrl,
-          isDark: (isDark ?? prevData.userMeta?.isDark) ?? false,
-          language: language ?? prevData.userMeta?.language,
-          storageLimitMb: storageLimitMb ?? prevData.userMeta?.storageLimitMb,
-          storageUsedMb: storageUsedMb ?? prevData.userMeta?.storageUsedMb,
+        UserModel(
+          name: name ?? '',
+          email: prevData.email,
+          userSubscription: prevData.userSubscription,
+          userMeta: UserMeta(
+            signInMethod: prevData.userMeta?.signInMethod,
+            updatedAt: DateTime.now(),
+            isEmailVerified: prevData.userMeta?.isEmailVerified ?? false,
+            createdAt: prevData.userMeta?.createdAt,
+            lastLoggedIn: prevData.userMeta?.lastLoggedIn,
+            profileUrl: profileUrl ?? prevData.userMeta?.profileUrl,
+            isDark: (isDark ?? prevData.userMeta?.isDark) ?? false,
+            language: language ?? prevData.userMeta?.language,
+            storageLimitMb: storageLimitMb ?? prevData.userMeta?.storageLimitMb,
+            storageUsedMb: storageUsedMb ?? prevData.userMeta?.storageUsedMb,
+          ),
         ),
-      ),
-      userId,
-      mongoClient);
+        userId,
+        mongoClient,
+      );
   return successResponse(user);
 }
 

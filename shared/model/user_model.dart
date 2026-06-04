@@ -2,14 +2,6 @@ import 'subscription_plan_model.dart';
 import 'user_meta.dart';
 
 class UserModel {
-  final String? id;
-  final String name;
-  final String email;
-
-  final String? encryptionKey;
-  final UserMeta? userMeta;
-  final UserSubscription? userSubscription;
-
   UserModel({
     this.id,
     this.userMeta,
@@ -36,14 +28,22 @@ class UserModel {
       email: json['email'] as String,
     );
   }
+  final String? id;
+  final String name;
+  final String email;
 
-  UserModel copyWith(
-      {String? name,
-      String? id,
-      UserMeta? userMeta,
-      UserSubscription? userSubscription}) {
+  final String? encryptionKey;
+  final UserMeta? userMeta;
+  final UserSubscription? userSubscription;
+
+  UserModel copyWith({
+    String? name,
+    String? id,
+    UserMeta? userMeta,
+    UserSubscription? userSubscription,
+  }) {
     return UserModel(
-      name: name ?? "",
+      name: name ?? '',
       userMeta: userMeta,
       userSubscription: userSubscription,
       id: id,

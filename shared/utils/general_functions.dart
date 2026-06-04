@@ -37,7 +37,7 @@ class GeneralFunctions {
       await ensureDirExists(dirPath);
 
       final bytes = await uploadedFile.readAsBytes();
-      final mimeType = uploadedFile.contentType?.mimeType;
+      final mimeType = uploadedFile.contentType.mimeType;
 
       final filePath =
           '$dirPath/${DateTime.now().millisecondsSinceEpoch}_${uploadedFile.name}';
@@ -46,7 +46,7 @@ class GeneralFunctions {
       if (mimeType != null && mimeType.startsWith('image/')) {
         final image = img.decodeImage(Uint8List.fromList(bytes));
 
-        if (image == null) throw BadRequestException("Invalid image");
+        if (image == null) throw BadRequestException('Invalid image');
 
         final compressedBytes = img.encodeJpg(
           image,

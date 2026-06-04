@@ -2,16 +2,6 @@ import 'subscription_plan_model.dart';
 import 'user_meta.dart';
 
 class AuthenticationModel {
-  final String? id;
-  final String? token;
-  final String? refreshToken;
-  final String name;
-  final String email;
-  final String? encryptionKey;
-  final String? password;
-  final UserMeta? userMeta;
-  final UserSubscription? userSubscription;
-
   AuthenticationModel({
     this.id,
     this.refreshToken,
@@ -42,15 +32,25 @@ class AuthenticationModel {
       email: json['email'] as String,
     );
   }
+  final String? id;
+  final String? token;
+  final String? refreshToken;
+  final String name;
+  final String email;
+  final String? encryptionKey;
+  final String? password;
+  final UserMeta? userMeta;
+  final UserSubscription? userSubscription;
 
   AuthenticationModel copyWith({String? token, String? refreshToken}) {
     return AuthenticationModel(
-        name: name,
-        password: password,
-        id: id,
-        email: email,
-        token: token ?? this.token,
-        refreshToken: refreshToken ?? this.refreshToken);
+      name: name,
+      password: password,
+      id: id,
+      email: email,
+      token: token ?? this.token,
+      refreshToken: refreshToken ?? this.refreshToken,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -58,7 +58,7 @@ class AuthenticationModel {
       'id': id,
       'name': name,
       'email': email,
-      if (encryptionKey != null) "encryptionKey": encryptionKey,
+      if (encryptionKey != null) 'encryptionKey': encryptionKey,
       if (password != null) 'password': password,
       if (userMeta != null) 'userMeta': userMeta?.toJson(),
       if (userSubscription != null)

@@ -4,9 +4,9 @@ import '../../../shared/constants/app_constants.dart';
 import '../../exceptions/app_exceptions.dart';
 
 class AiService {
+  factory AiService() => instance;
   AiService._privateConstructor();
   static final AiService instance = AiService._privateConstructor();
-  factory AiService() => instance;
 
   final deepSeek = DeepSeek(
     AppConstants.deepSeekApiKey,
@@ -19,21 +19,24 @@ class AiService {
     ),
   );
 
-  Future<String> generateText(
-      {String? prompt,
-      String? mimeType,
-      List<int>? bytes,
-      String? docInfo}) async {
+  Future<String> generateText({
+    String? prompt,
+    String? mimeType,
+    List<int>? bytes,
+    String? docInfo,
+  }) async {
     try {
       final response = await googleClient.models.generateContent(
-        request: GenerateContentRequest(contents: [
-          Content(
-            parts: [
-              Part.text(prompt ?? documentExtractionPrompt(docInfo ?? "")),
-              // Part.bytes(bytes ?? [], mimeType ?? "image/png")
-            ],
-          )
-        ]),
+        request: GenerateContentRequest(
+          contents: [
+            Content(
+              parts: [
+                Part.text(prompt ?? documentExtractionPrompt(docInfo ?? '')),
+                // Part.bytes(bytes ?? [], mimeType ?? "image/png")
+              ],
+            ),
+          ],
+        ),
         model: 'gemini-2.5-flash',
       );
       final blockReason = response.promptFeedback?.blockReason;
@@ -47,9 +50,9 @@ class AiService {
         return await generateTextWithDeepSeek(docInfo: docInfo);
       }
       if (!response.hasContent) {
-        throw FailedException("Failed to Extract text");
+        throw FailedException('Failed to Extract text');
       }
-      return cleanJson(response.text ?? "");
+      return cleanJson(response.text ?? '');
     } on GoogleAIException catch (e) {
       throw FailedException(e.message);
     }
@@ -57,19 +60,21 @@ class AiService {
 
   Future<String> generateTextWithDeepSeek({String? docInfo}) async {
     try {
-      final Completion response = await deepSeek.createChat(
+      final response = await deepSeek.createChat(
         messages: [
           Message(
-              role: "user", content: documentExtractionPrompt(docInfo ?? ""))
+            role: 'user',
+            content: documentExtractionPrompt(docInfo ?? ''),
+          ),
         ],
         model: Models.reasoner.name,
         options: {
-          "temperature": 1.0,
-          "max_tokens": 4096,
+          'temperature': 1.0,
+          'max_tokens': 4096,
         },
       );
       if (response.text.isEmpty) {
-        throw FailedException("Failed to Extract text");
+        throw FailedException('Failed to Extract text');
       }
       return cleanJson(response.text);
     } on DeepSeekException catch (e) {

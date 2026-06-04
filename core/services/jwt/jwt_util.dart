@@ -7,8 +7,11 @@ class JwtUtil {
   static final String _secret = AppConstants.JwtSecret;
 
   /// Generate JWT token
-  static String generateToken(String userId,
-      {Duration? duration, String? type}) {
+  static String generateToken(
+    String userId, {
+    Duration? duration,
+    String? type,
+  }) {
     final jwt = JWT({
       'sub': userId,
       'type': type ?? 'access',
@@ -25,8 +28,8 @@ class JwtUtil {
   static JWT? verifyToken(String token) {
     try {
       return JWT.verify(token, SecretKey(_secret));
-    } on JWTException catch (e) {
-      throw UnauthorizedException(message: "Invalid token");
+    } on JWTException {
+      throw UnauthorizedException(message: 'Invalid token');
     }
   }
 

@@ -1,9 +1,7 @@
 import 'package:dotenv/dotenv.dart';
 
 class AppConstants {
-  static final DotEnv env = DotEnv(
-    includePlatformEnvironment: false,
-  );
+  static final DotEnv env = DotEnv();
 
   static bool _initialized = false;
 
@@ -40,7 +38,7 @@ class AppConstants {
   static String appEmail = env['APP_EMAIL'] ?? 'privvo@gmail.com';
 
   /// collections
-  static String usersCollection = "users";
+  static String usersCollection = 'users';
 
-  static String documentsCollection = "documents";
+  static String documentsCollection = 'documents';
 }

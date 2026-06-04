@@ -1,17 +1,6 @@
 import 'dart:typed_data';
 
 class DocumentFileModel {
-  final String fileName;
-
-  final String mimeType;
-  final String extension;
-
-  final double sizeMb;
-  final Uint8List? sizeBytesUint8List;
-  final int sizeBytes;
-
-  final bool isImage;
-
   DocumentFileModel({
     // required this.url,
     required this.sizeBytesUint8List,
@@ -35,6 +24,16 @@ class DocumentFileModel {
       isImage: json['isImage'] as bool,
     );
   }
+  final String fileName;
+
+  final String mimeType;
+  final String extension;
+
+  final double sizeMb;
+  final Uint8List? sizeBytesUint8List;
+  final int sizeBytes;
+
+  final bool isImage;
 
   Map<String, dynamic> toJson() {
     return {

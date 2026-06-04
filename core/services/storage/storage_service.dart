@@ -7,14 +7,14 @@ import 'package:image/image.dart' as img;
 import '../../exceptions/app_exceptions.dart';
 
 class StorageService {
+  factory StorageService() => instance;
   StorageService._privateConstructor();
   static final StorageService instance = StorageService._privateConstructor();
-  factory StorageService() => instance;
 
   final cloudinary = Cloudinary.signedConfig(
-    apiKey: "348455518921935",
-    apiSecret: "ZefzaU_GDLvcpAOZqfTUwnhq3AU",
-    cloudName: "drbwpijii",
+    apiKey: '348455518921935',
+    apiSecret: 'ZefzaU_GDLvcpAOZqfTUwnhq3AU',
+    cloudName: 'drbwpijii',
   );
 
   Future<Uint8List> encryptFile(List<int> bytes, String keyString) async {
@@ -25,9 +25,11 @@ class StorageService {
     return Uint8List.fromList(encrypted.bytes);
   }
 
-  Future<File?> compressFile(
-      {UploadedFile? uploadedFile, String? userId}) async {
-    final mimeType = uploadedFile?.contentType?.mimeType;
+  Future<File?> compressFile({
+    UploadedFile? uploadedFile,
+    String? userId,
+  }) async {
+    final mimeType = uploadedFile?.contentType.mimeType;
 
     final filePath =
         '${DateTime.now().millisecondsSinceEpoch}_${userId ?? ""}_${uploadedFile?.name}';
@@ -36,7 +38,7 @@ class StorageService {
     if (mimeType != null && mimeType.startsWith('image/')) {
       final image = img.decodeImage(Uint8List.fromList(bytes!));
 
-      if (image == null) throw BadRequestException("Invalid image");
+      if (image == null) throw BadRequestException('Invalid image');
 
       final compressedBytes = img.encodeJpg(
         image,
@@ -50,20 +52,20 @@ class StorageService {
     return file;
   }
 
-  Future<CloudinaryResponse?> uploadFile(
-      {File? uploadedFile,
-      String? folder,
-      List<int>? fileBytes,
-      String? userId,
-      CloudinaryResourceType? resourceType}) async {
+  Future<CloudinaryResponse?> uploadFile({
+    File? uploadedFile,
+    String? folder,
+    List<int>? fileBytes,
+    String? userId,
+    CloudinaryResourceType? resourceType,
+  }) async {
     try {
       final result = await cloudinary.upload(
         file: uploadedFile?.path,
         fileBytes: fileBytes ?? uploadedFile?.readAsBytesSync(),
-        fileName:
-            "${DateTime.now().millisecondsSinceEpoch}_${userId}_${uploadedFile?.path.split('.').first}",
-        folder: folder ?? "images",
-        resourceType: resourceType ?? CloudinaryResourceType.image,
+        fileName: '${DateTime.now().millisecondsSinceEpoch}_$userId',
+        folder: folder ?? 'images',
+        resourceType: resourceType ?? CloudinaryResourceType.auto,
       );
       if (result.isSuccessful) {
         return result;
@@ -71,5 +73,6 @@ class StorageService {
     } catch (e) {
       throw BadRequestException(e.toString());
     }
+    return null;
   }
 }

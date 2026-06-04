@@ -1,32 +1,6 @@
 import 'document_file_model.dart';
 
 class DocumentModel {
-  final String? id;
-  final String userId;
-
-  final String title;
-  final String? description;
-
-  final String documentType;
-
-  final List<String> tags;
-
-  final DocumentFileModel? file;
-
-  final String? thumbnailUrl;
-
-  final Map<String, dynamic>? customFields;
-
-  final Map<String, dynamic>? aiGenerated;
-
-  final Map<String, dynamic>? extractedData;
-
-  final bool isArchived;
-  final bool isFavorite;
-
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-
   DocumentModel({
     this.id,
     this.extractedData,
@@ -86,6 +60,31 @@ class DocumentModel {
       ),
     );
   }
+  final String? id;
+  final String userId;
+
+  final String title;
+  final String? description;
+
+  final String documentType;
+
+  final List<String> tags;
+
+  final DocumentFileModel? file;
+
+  final String? thumbnailUrl;
+
+  final Map<String, dynamic>? customFields;
+
+  final Map<String, dynamic>? aiGenerated;
+
+  final Map<String, dynamic>? extractedData;
+
+  final bool isArchived;
+  final bool isFavorite;
+
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   Map<String, dynamic> toJson() {
     return {

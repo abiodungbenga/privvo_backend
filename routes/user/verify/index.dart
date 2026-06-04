@@ -10,8 +10,10 @@ Future<Response> onRequest(RequestContext context) {
   return switch (context.request.method) {
     HttpMethod.post => onVerify(context),
     _ => Future.value(
-        errorResponse("Method not allowed",
-            statusCode: HttpStatus.methodNotAllowed),
+        errorResponse(
+          'Method not allowed',
+          statusCode: HttpStatus.methodNotAllowed,
+        ),
       ),
   };
 }
@@ -20,10 +22,10 @@ Future<Response> onVerify(RequestContext context) async {
   final body = await context.request.json() as Map<String, dynamic>;
   final otp = body['otp'] as String?;
   if (otp == null) {
-    return errorResponse('OTP is required', statusCode: HttpStatus.badRequest);
+    return errorResponse('OTP is required');
   }
   if (otp.length != 4) {
-    return errorResponse('Invalid OTP', statusCode: HttpStatus.badRequest);
+    return errorResponse('Invalid OTP');
   }
   final mongoClient = context.read<MongoService>();
 
@@ -31,6 +33,6 @@ Future<Response> onVerify(RequestContext context) async {
   final userId = context.read<String>();
   final verified = await context
       .read<UserRepo>()
-      .verifyUser(otp ?? "", userId, redisService, mongoClient);
+      .verifyUser(otp ?? '', userId, redisService, mongoClient);
   return successResponse({'verified': verified});
 }

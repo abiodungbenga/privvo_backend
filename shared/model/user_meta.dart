@@ -1,15 +1,4 @@
 class UserMeta {
-  final String? profileUrl;
-  final int? storageUsedMb;
-  final int? storageLimitMb;
-  final String? language;
-  final String? signInMethod;
-  final bool isDark;
-  final bool isEmailVerified;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-  final DateTime? lastLoggedIn;
-
   UserMeta({
     this.profileUrl,
     this.signInMethod = "sf-auth",
@@ -43,6 +32,16 @@ class UserMeta {
           : null,
     );
   }
+  final String? profileUrl;
+  final int? storageUsedMb;
+  final int? storageLimitMb;
+  final String? language;
+  final String? signInMethod;
+  final bool isDark;
+  final bool isEmailVerified;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final DateTime? lastLoggedIn;
 
   Map<String, dynamic> toJson() {
     return {
