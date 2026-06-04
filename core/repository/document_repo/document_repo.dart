@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:uuid/uuid.dart';
 import '../../../shared/constants/app_constants.dart';
 import '../../../shared/model/document_file_model.dart';
 import '../../../shared/model/document_model.dart';
+import '../../../shared/utils/id_generator.dart';
 import '../../data/mongo/mongo_service.dart';
 import '../../services/ai/ai_service.dart';
 import '../../services/redis/redis_service.dart';
@@ -32,8 +32,6 @@ class DocumentRepo {
         mongoService.db!.collection(AppConstants.documentsCollection);
     final userCollection =
         mongoService.db!.collection(AppConstants.usersCollection);
-
-    const uuid = Uuid();
 
     final encryptionKey =
         await redis.redisClient.get(key: 'encryptionKey:$userId');
@@ -94,7 +92,7 @@ class DocumentRepo {
               isImage: uploadedFile.contentType.mimeType.startsWith('image/'),
             )
           : null,
-      id: uuid.v4(),
+      id: getRandomId,
       thumbnailUrl: thumbnailUrl ?? '',
       customFields: customFields ?? {},
       isArchived: isArchived ?? false,
