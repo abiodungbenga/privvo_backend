@@ -36,9 +36,16 @@ class MainMiddlewares {
   }
 
   /// token validation MiddleWare
-  static Middleware authMiddleware() {
+  static Middleware authMiddleware({List<String>? allowedMethods}) {
     return (handler) {
       return (context) async {
+        final method = context.request.method.value;
+        if (allowedMethods != null &&
+            allowedMethods.isNotEmpty &&
+            !allowedMethods.contains(method)) {
+          return handler(context);
+        }
+
         final authHeader = context.request.headers['authorization'];
 
         if (authHeader == null || !authHeader.startsWith('Bearer ')) {
