@@ -10,6 +10,7 @@ class AuthenticationModel {
     this.userSubscription,
     this.token,
     required this.name,
+    this.isEmailVerified,
     required this.email,
     this.password,
   });
@@ -30,6 +31,9 @@ class AuthenticationModel {
       refreshToken: json['refreshToken'] as String?,
       token: json['token'] as String?,
       email: json['email'] as String,
+      isEmailVerified: (json['userMeta']
+              as Map<String, dynamic>?)?['isEmailVerified'] as bool? ??
+          false,
     );
   }
   final String? id;
@@ -37,17 +41,21 @@ class AuthenticationModel {
   final String? refreshToken;
   final String name;
   final String email;
+
+  final bool? isEmailVerified;
   final String? encryptionKey;
   final String? password;
   final UserMeta? userMeta;
   final UserSubscription? userSubscription;
 
-  AuthenticationModel copyWith({String? token, String? refreshToken}) {
+  AuthenticationModel copyWith(
+      {String? token, String? refreshToken, bool? isEmailVerified}) {
     return AuthenticationModel(
       name: name,
       password: password,
       id: id,
       email: email,
+      isEmailVerified: isEmailVerified ?? this.isEmailVerified,
       token: token ?? this.token,
       refreshToken: refreshToken ?? this.refreshToken,
     );
@@ -58,6 +66,7 @@ class AuthenticationModel {
       'id': id,
       'name': name,
       'email': email,
+      if (isEmailVerified != null) 'isEmailVerified': isEmailVerified,
       if (encryptionKey != null) 'encryptionKey': encryptionKey,
       if (password != null) 'password': password,
       if (userMeta != null) 'userMeta': userMeta?.toJson(),

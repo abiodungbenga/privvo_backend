@@ -5,7 +5,7 @@ import 'package:dart_frog/dart_frog.dart';
 import '../../../core/data/mongo/mongo_service.dart';
 import '../../../core/repository/auth/auth_repo.dart';
 import '../../../core/response/my_response.dart';
-import '../../../core/services/redis/redis_service.dart';
+import '../../../core/services/cache/redis/redis_service.dart';
 import '../../../shared/model/authentication_model.dart';
 import '../../../shared/model/subscription_plan_model.dart';
 import '../../../shared/model/user_meta.dart';

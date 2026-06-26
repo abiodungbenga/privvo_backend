@@ -53,13 +53,3 @@ class BadRequestException extends AppException {
           code: 'BAD_REQUEST',
         );
 }
-
-class ValidationException extends AppException {
-  ValidationException(this.errors)
-      : super(
-          message: 'Validation failed',
-          statusCode: 422,
-          code: 'VALIDATION_ERROR',
-        );
-  final Map<String, List<String>> errors;
-}

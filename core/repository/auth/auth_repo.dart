@@ -5,7 +5,7 @@ import '../../../shared/utils/general_functions.dart';
 import '../../data/mongo/mongo_service.dart';
 import '../../exceptions/app_exceptions.dart';
 import '../../services/jwt/jwt_util.dart';
-import '../../services/redis/redis_service.dart';
+import '../../services/cache/redis/redis_service.dart';
 import '../../services/verification/verification_service.dart';
 
 class AuthRepository {
@@ -15,28 +15,24 @@ class AuthRepository {
     RedisService redisService,
   ) async {
     _rateLimit(user.email, mongoClient, redisService);
-    if (user.email.isEmpty ||
-        (user.password?.isEmpty ?? true) ||
-        user.name.isEmpty) {
-      throw ValidationException({
-        'email': [
-          'Email is required',
-        ],
-        'password': [
-          'Password is required',
-        ],
-        'name': [
-          'Name is required',
-        ],
-      });
-    }
+    // if (user.email.isEmpty ||
+    //     (user.password?.isEmpty ?? true) ||
+    //     user.name.isEmpty) {
+    //   throw ValidationException({
+    //     'email': [
+    //       'Email is required',
+    //     ],
+    //     'password': [
+    //       'Password is required',
+    //     ],
+    //     'name': [
+    //       'Name is required',
+    //     ],
+    //   });
+    // }
     final exists = await userExists(user.email, mongoClient, redisService);
     if (exists) {
-      throw ValidationException({
-        'email': [
-          'User already exists',
-        ],
-      });
+      throw BadRequestException('User exist already');
     }
     if (mongoClient.db != null) {
       final refToken = JwtUtil.generateToken(
@@ -75,17 +71,6 @@ class AuthRepository {
   ) async {
     _rateLimit(email, mongoClient, redisService);
     if (mongoClient.db != null) {
-      if (email.isEmpty || password.isEmpty) {
-        throw ValidationException({
-          'email': [
-            'Email is required',
-          ],
-          'password': [
-            'Password is required',
-          ],
-        });
-      }
-
       final collection =
           mongoClient.db!.collection(AppConstants.usersCollection);
 
@@ -133,8 +118,10 @@ class AuthRepository {
         );
       }
 
-      return AuthenticationModel.fromJson(user)
-          .copyWith(token: accessToken, refreshToken: refToken);
+      return AuthenticationModel.fromJson(user).copyWith(
+          token: accessToken,
+          refreshToken: refToken,
+          isEmailVerified: user['userMeta']['isEmailVerified'] as bool);
     } else {
       throw MongoDartError('DB connection failed');
     }

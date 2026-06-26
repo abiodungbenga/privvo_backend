@@ -1,14 +1,12 @@
 import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
 import '../../../core/data/mongo/mongo_service.dart';
-import '../../../core/exceptions/app_exceptions.dart';
 import '../../../core/repository/google/google_signin_repo.dart';
 import '../../../core/response/my_response.dart';
-import '../../../core/services/redis/redis_service.dart';
+import '../../../core/services/cache/redis/redis_service.dart';
 import '../../../shared/model/authentication_model.dart';
 import '../../../shared/model/subscription_plan_model.dart';
 import '../../../shared/model/user_meta.dart';
-import '../../../shared/utils/general_functions.dart';
 import '../../../shared/utils/id_generator.dart';
 
 Future<Response> onRequest(RequestContext context) {
@@ -28,9 +26,7 @@ Future<Response> onGoogleSignIn(RequestContext context) async {
   final body = await context.request.json() as Map<String, dynamic>;
   final idToken = body['idToken'] as String?;
   if (idToken == null) {
-    throw ValidationException({
-      'idToken': ['idToken is required'],
-    });
+    throw errorResponse('idToken is required');
   }
   final googleSigninRepo = context.read<GoogleSigninRepository>();
   final mongoService = context.read<MongoService>();

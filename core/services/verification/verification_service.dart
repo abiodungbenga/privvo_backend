@@ -1,7 +1,7 @@
 import 'package:email_otp/email_otp.dart';
 
 import '../../../shared/constants/app_constants.dart';
-import '../redis/redis_service.dart';
+import '../cache/redis/redis_service.dart';
 
 class VerificationService {
   static Future<void> init() async {

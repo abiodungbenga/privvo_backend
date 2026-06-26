@@ -5,7 +5,7 @@ import '../../../core/data/mongo/mongo_service.dart';
 import '../../../core/exceptions/app_exceptions.dart';
 import '../../../core/repository/document_repo/document_repo.dart';
 import '../../../core/response/my_response.dart';
-import '../../../core/services/redis/redis_service.dart';
+import '../../../core/services/cache/redis/redis_service.dart';
 
 Future<Response> onRequest(RequestContext context) {
   // TODO: implement route handler

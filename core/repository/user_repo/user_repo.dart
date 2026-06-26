@@ -3,7 +3,7 @@ import '../../../shared/constants/app_constants.dart';
 import '../../../shared/model/user_model.dart';
 import '../../data/mongo/mongo_service.dart';
 import '../../exceptions/app_exceptions.dart';
-import '../../services/redis/redis_service.dart';
+import '../../services/cache/redis/redis_service.dart';
 
 class UserRepo {
   Future<UserModel> getUser(String userId, MongoService mongoClient) async {

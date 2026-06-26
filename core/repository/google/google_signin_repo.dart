@@ -7,7 +7,7 @@ import '../../../shared/model/google_sign_in.dart';
 import '../../data/mongo/mongo_service.dart';
 import '../../exceptions/app_exceptions.dart';
 import '../../services/jwt/jwt_util.dart';
-import '../../services/redis/redis_service.dart';
+import '../../services/cache/redis/redis_service.dart';
 
 class GoogleSigninRepository {
   http.Client client = http.Client();

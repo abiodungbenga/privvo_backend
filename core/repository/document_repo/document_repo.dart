@@ -7,7 +7,7 @@ import '../../../shared/model/document_model.dart';
 import '../../../shared/utils/id_generator.dart';
 import '../../data/mongo/mongo_service.dart';
 import '../../services/ai/ai_service.dart';
-import '../../services/redis/redis_service.dart';
+import '../../services/cache/redis/redis_service.dart';
 import '../../services/storage/storage_service.dart';
 import '../ocr/ocr_repository.dart';
 

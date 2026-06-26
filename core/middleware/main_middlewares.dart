@@ -5,7 +5,7 @@ import '../data/mongo/mongo_service.dart';
 import '../exceptions/app_exceptions.dart';
 import '../response/my_response.dart';
 import '../services/jwt/jwt_util.dart';
-import '../services/redis/redis_service.dart';
+import '../services/cache/redis/redis_service.dart';
 
 class MainMiddlewares {
   static Middleware mongoMiddleware() {
@@ -99,14 +99,10 @@ class MainMiddlewares {
           try {
             body = await context.request.json();
           } on FormatException {
-            throw ValidationException({
-              'message': ['Invalid JSON body'],
-            });
+            throw BadRequestException('Invalid JSON body');
           }
           if (body is! Map || body.isEmpty) {
-            throw ValidationException({
-              'message': ['Empty JSON body'],
-            });
+            throw BadRequestException('Empty JSON body');
           }
         }
 
@@ -137,16 +133,6 @@ class MainMiddlewares {
       return (context) async {
         try {
           return await handler(context);
-        } on ValidationException catch (e) {
-          return Response.json(
-            statusCode: e.statusCode,
-            body: {
-              'success': false,
-              'message': e.message,
-              'code': e.code,
-              'errors': e.errors,
-            },
-          );
         } on DataBaseException catch (e) {
           return Response.json(
             statusCode: e.statusCode,

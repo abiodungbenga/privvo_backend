@@ -1,6 +1,6 @@
 import 'package:shorebird_redis_client/shorebird_redis_client.dart';
-import '../../../shared/constants/app_constants.dart';
-import '../../exceptions/app_exceptions.dart';
+import '../../../../shared/constants/app_constants.dart';
+import '../../../exceptions/app_exceptions.dart';
 
 class RedisService {
   RedisService._() {
