@@ -1,6 +1,6 @@
 import 'package:mongo_dart/mongo_dart.dart';
 import '../../../shared/constants/app_constants.dart';
-import '../../../shared/model/authentication_model.dart';
+import '../../../shared/model/v1/authentication_model.dart';
 import '../../../shared/utils/general_functions.dart';
 import '../../data/mongo/mongo_service.dart';
 import '../../exceptions/app_exceptions.dart';

@@ -1,7 +1,7 @@
 import 'package:dart_frog/dart_frog.dart';
 
-import '../../../core/middleware/main_middlewares.dart';
-import '../../../core/repository/auth/auth_repo.dart';
+import '../../../../core/middleware/main_middlewares.dart';
+import '../../../../core/repository/auth/auth_repo.dart';
 
 Middleware _provideAuthRepository() {
   return provider(

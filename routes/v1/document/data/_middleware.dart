@@ -1,6 +1,6 @@
 import 'package:dart_frog/dart_frog.dart';
-import '../../../core/middleware/main_middlewares.dart';
-import '../../../core/repository/document_repo/document_repo.dart';
+import '../../../../core/middleware/main_middlewares.dart';
+import '../../../../core/repository/document_repo/document_repo.dart';
 
 Middleware _provideDocumentRepository() {
   return provider(

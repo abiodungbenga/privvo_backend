@@ -2,17 +2,17 @@ import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
 
-import '../../../core/data/mongo/mongo_service.dart';
-import '../../../core/repository/auth/auth_repo.dart';
-import '../../../core/response/my_response.dart';
-import '../../../core/services/cache/redis/redis_service.dart';
-import '../../../shared/model/authentication_model.dart';
-import '../../../shared/model/subscription_plan_model.dart';
-import '../../../shared/model/user_meta.dart';
-import '../../../shared/utils/general_functions.dart';
-import '../../../shared/utils/id_generator.dart';
-import '../../../shared/utils/validator/validator_rules.dart';
-import '../../../shared/utils/validator/validator_schema.dart';
+import '../../../../core/data/mongo/mongo_service.dart';
+import '../../../../core/repository/auth/auth_repo.dart';
+import '../../../../core/response/my_response.dart';
+import '../../../../core/services/cache/redis/redis_service.dart';
+import '../../../../shared/model/v1/authentication_model.dart';
+import '../../../../shared/model/v1/subscription_plan_model.dart';
+import '../../../../shared/model/v1/user_meta.dart';
+import '../../../../shared/utils/general_functions.dart';
+import '../../../../shared/utils/id_generator.dart';
+import '../../../../shared/utils/validator/validator_rules.dart';
+import '../../../../shared/utils/validator/validator_schema.dart';
 
 Future<Response> onRequest(RequestContext context) {
   // TODO: implement route handler

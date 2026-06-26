@@ -1,6 +1,6 @@
 import 'package:mongo_dart/mongo_dart.dart';
 import '../../../shared/constants/app_constants.dart';
-import '../../../shared/model/user_model.dart';
+import '../../../shared/model/v1/user_model.dart';
 import '../../data/mongo/mongo_service.dart';
 import '../../exceptions/app_exceptions.dart';
 import '../../services/cache/redis/redis_service.dart';
