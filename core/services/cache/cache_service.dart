@@ -1,9 +1,7 @@
 import 'redis/redis_service.dart';
 
 class CacheService {
-  CacheService({required this.redis});
-
-  final RedisService redis;
+  final RedisService redis = RedisService.instance;
 
   Future<T> remember<T>({
     required String key,
