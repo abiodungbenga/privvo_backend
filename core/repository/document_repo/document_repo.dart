@@ -23,6 +23,7 @@ class DocumentRepo {
     Map<String, dynamic>? extractedData,
     List<String>? tags,
     String? thumbnailUrl,
+    String? categoryId,
     Map<String, dynamic>? customFields,
     bool? isArchived,
     bool? isFavorite,
@@ -75,6 +76,7 @@ class DocumentRepo {
     final bytes = await file.readAsBytes();
     final document = DocumentModel(
       title: title ?? '',
+      categoryId: categoryId ?? '',
       description: description ?? '',
       documentType: documentType ?? '',
       extractedData: shouldExtractData ? json : extractedData ?? {},

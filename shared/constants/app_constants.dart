@@ -41,4 +41,9 @@ class AppConstants {
   static String usersCollection = 'users';
 
   static String documentsCollection = 'documents';
+
+  static String categoryCollection = 'category';
+
+  /// cache keys
+  static String userCacheKey(String userId) => "userCacheKey:$userId";
 }

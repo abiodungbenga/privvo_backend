@@ -6,6 +6,7 @@ class DocumentModel {
     this.extractedData,
     this.aiGenerated,
     required this.userId,
+    required this.categoryId,
     required this.title,
     this.description,
     required this.documentType,
@@ -23,6 +24,7 @@ class DocumentModel {
     return DocumentModel(
       id: json['_id'] as String?,
       userId: json['userId'] as String,
+      categoryId: json['categoryId'] as String,
       title: json['title'] as String,
       description: json['description'] as String?,
       documentType: json['documentType'] as String,
@@ -62,6 +64,7 @@ class DocumentModel {
   }
   final String? id;
   final String userId;
+  final String categoryId;
 
   final String title;
   final String? description;
@@ -91,6 +94,7 @@ class DocumentModel {
       '_id': id,
       'userId': userId,
       'title': title,
+      'categoryId': categoryId,
       'extractedData': extractedData,
       'aiGenerated': aiGenerated,
       'description': description,

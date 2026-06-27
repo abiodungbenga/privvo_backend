@@ -1,11 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:dart_frog/dart_frog.dart';
 import '../../../../core/data/mongo/mongo_service.dart';
 import '../../../../core/repository/user_repo/user_repo.dart';
 import '../../../../core/response/my_response.dart';
+import '../../../../core/services/cache/cache_service.dart';
 import '../../../../core/services/cache/redis/redis_service.dart';
 import '../../../../core/services/storage/storage_service.dart';
+import '../../../../shared/constants/app_constants.dart';
 import '../../../../shared/model/v1/user_meta.dart';
 import '../../../../shared/model/v1/user_model.dart';
 
@@ -26,8 +28,19 @@ Future<Response> onRequest(RequestContext context) {
 
 Future<Response> onGet(RequestContext context) async {
   final mongoClient = context.read<MongoService>();
+  final redis = context.read<RedisService>();
   final userId = context.read<String>();
-  final users = await context.read<UserRepo>().getUser(userId, mongoClient);
+  final users = await CacheService.remember(
+    key: AppConstants.userCacheKey(userId),
+    redis: redis,
+    callback: () async {
+      final user = await context.read<UserRepo>().getUser(userId, mongoClient);
+      return user;
+    },
+    fromJson: (json) =>
+        UserModel.fromJson(jsonDecode(json) as Map<String, dynamic>),
+    toJson: (value) => jsonEncode(value.toJson()),
+  );
   return successResponse(users);
 }
 

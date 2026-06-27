@@ -1,10 +1,9 @@
 import 'redis/redis_service.dart';
 
 class CacheService {
-  final RedisService redis = RedisService.instance;
-
-  Future<T> remember<T>({
+  static Future<T> remember<T>({
     required String key,
+    required RedisService redis,
     Duration ttl = const Duration(seconds: 5),
     required Future<T> Function() callback,
     required T Function(String json) fromJson,
@@ -27,9 +26,10 @@ class CacheService {
     return result;
   }
 
-  Future<void> forget(String key) => redis.redisClient.delete(key: key);
+  static Future<void> forget(String key, RedisService redis) =>
+      redis.redisClient.delete(key: key);
 
-  Future<void> forgetMany(List<String> keys) async {
+  static Future<void> forgetMany(List<String> keys, RedisService redis) async {
     await Future.wait(
       keys.map((key) => redis.redisClient.delete(key: key)),
     );

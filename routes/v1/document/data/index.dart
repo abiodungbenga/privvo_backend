@@ -48,6 +48,13 @@ Future<Response> onCreate(RequestContext context) async {
       bool.tryParse(formData.fields['shouldExtractData'] ?? 'true');
 
   final file = formData.files['file'];
+  final categoryId = formData.fields['categoryId'];
+
+  if (categoryId == null) {
+    return errorResponse(
+      'Category is required',
+    );
+  }
 
   if (file == null) {
     throw BadRequestException('uploaded is null!');
